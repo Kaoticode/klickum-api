@@ -14,7 +14,6 @@ app.use(router);
 
 db().then(() => console.log("Conexion Ready"));
 
-// Configurar la ruta de almacenamiento estático
 const PATH_STORAGE = path.join(process.cwd(), 'storage');
 app.use("/storage", express.static(PATH_STORAGE));
 

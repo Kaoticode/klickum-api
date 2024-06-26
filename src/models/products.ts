@@ -6,6 +6,12 @@ const ProductSchema = new Schema<Product>(
         name: {
             type: String,
             required: true,
+            default: "Nombre del producto"
+        },
+        description: {
+            type: String,
+            required: true,
+            default: "Description del producto"
         },
         price: {
             type: Number,
@@ -13,12 +19,22 @@ const ProductSchema = new Schema<Product>(
         },
         image: {
             type: String,
+        },
+        category: {
+            type: String,
             required: true,
+            default: "Categoría del producto"
         },
         promoted: {
             type: Boolean,
             required: true,
+            default: false
         },
+        foodtruck:{
+            type: Boolean,
+            required: true,
+            default: false
+        }
 
     },
     {
