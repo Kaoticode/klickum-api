@@ -3,7 +3,8 @@ import OrderModel from "../models/orders";
 
 const getAllOrders = async () => {
     try {
-        const orders = await OrderModel.find({ isPending: true }).populate('items.product');
+        const orders = await OrderModel.find({}).populate('items.product').sort({ isPending: -1, createdAt: 1 });
+      
         return orders;
     } catch (error) {
         console.error('Error al obtener los pedidos:', error);
