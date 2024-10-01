@@ -1,10 +1,10 @@
 import { Request, Response, Router } from "express";
 import {
   getItems,
-  updateItems,
-  postItem,
   getItem,
-} from "../controllers/products";
+  postRifa,
+  deleteItem,
+} from "../controllers/rifas";
 
 const router = Router();
 
@@ -12,8 +12,8 @@ router.get("/", getItems);
 
 router.get("/:id", getItem);
 
-router.post("/", postItem);
+router.post("/", postRifa);
 
-router.patch("/:id", updateItems);
+router.delete("/:id", deleteItem);
 
 export { router };

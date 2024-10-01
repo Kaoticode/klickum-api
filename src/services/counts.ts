@@ -1,17 +1,19 @@
 import OrderModel from "../models/orders";
 import ProductModel from "../models/products";
+import RifaModel from "../models/rifas";
+import UserModel from "../models/user";
 
 
 
 const getCountsItems = async () => {
     try {
-        const orders = await OrderModel.find({ isPending: false }).populate('items.product');
-        const ordersCompleted = await OrderModel.countDocuments({ isPending: false })
-        const ordersPending = await OrderModel.countDocuments({ isPending: true })
-        const products = await ProductModel.countDocuments({})
-        const productsPromoted = await ProductModel.countDocuments({ promoted: true })
-        const productsFoodtruck = await ProductModel.countDocuments({ foodtruck: true} )
-        return  { orders: orders, ordersCompleted: ordersCompleted, ordersPending: ordersPending, products: products, productsPromoted: productsPromoted, productsFoodtruck: productsFoodtruck  };
+        const ganancias = await OrderModel.find({}).select('totalPrice -_id');
+        const gananciasRifas = await RifaModel.find({}).select('price qty -_id');
+        const usuarios = await UserModel.countDocuments({});
+        const monedas = await UserModel.find({}).select('monedas -_id');
+        const pedidos = await OrderModel.countDocuments({isSended: false});
+        const sorteos = await RifaModel.countDocuments({});
+        return  { usuarios: usuarios, monedas: monedas, ganancias: ganancias, gananciasRifas:gananciasRifas, pedidos: pedidos, sorteos:sorteos };
 
     } catch (error) {
         console.error('Error calculating total sum:', error);

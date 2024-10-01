@@ -11,10 +11,14 @@ const UserSchema = new Schema<User>(
       type: String,
       required: true,
     },
-    description: {
-      type: String,
-      default: "Soy la descripcion",
+    monedas:{
+      type: Number,
+      default: 0
     },
+    phone: {
+      type: Number,
+      required: true,
+    }
   },
   {
     versionKey: false,

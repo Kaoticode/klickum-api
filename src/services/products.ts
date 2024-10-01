@@ -1,44 +1,51 @@
 import ProductsModel from "../models/products";
 
-
 const getAllItems = async () => {
-   const responseItem = await ProductsModel.find({});
-  return responseItem; 
-};
-
-const getTrending = async () => {
   try {
-      const responseItem = await ProductsModel.find({ promoted: true });
-      return responseItem;
+    const responseItems = await ProductsModel.find({}).sort({ order: 1, category: 1 });
+    return responseItems;
   } catch (error) {
-      console.error('Error al obtener productos promocionados:', error);
-      throw error;
+    throw new Error("Error al obtener los productos");
   }
 };
 
 
-const getFoodtruck = async () => {
-
+const getProduct = async (id: string) => {
   try {
-    const responseItem = await ProductsModel.find({ foodtruck: true });
+    const responseItems = await ProductsModel.find({ _id: id }).sort({ order: 1, category: 1 });
+    return responseItems;
+  } catch (error) {
+    throw new Error("Error al obtener el producto");
+  }
+};
+
+const postProduct = async (name: string, price: number, description: string, imagen: string, qty: number, order: number, category: string, promoted: boolean) => {
+  try {
+    const responseItem = await ProductsModel.create({ name, price, description, imagen, qty, order, category, promoted });
     return responseItem;
-} catch (error) {
-    console.error('Error al obtener productos promocionados:', error);
+  } catch (error) {
+    console.error('Error al crear el producto:', error);
     throw error;
-}
+  }
 };
 
 
-const updateProduct = async (id: String, name: String, price: Number, promoted: Boolean, foodtruck: Boolean) => {
+
+const updateProduct = async (id: string, name: string, description: string, price: number, order: number, promoted: boolean, qty: number) => {
   try {
+    console.log('Updating product with ID:', id);
+    console.log('New data:', { name, price, promoted, order, description, qty });
+
     const updatedProduct = await ProductsModel.findOneAndUpdate(
       { _id: id },
-      { name, price, promoted, foodtruck },
+      { name, price, promoted, order, description, qty },
       { new: true }
     );
+
     if (!updatedProduct) {
       throw new Error('No se encontró el producto o no se pudo actualizar.');
     }
+
     return updatedProduct;
   } catch (error) {
     console.error('Error al actualizar el producto:', error);
@@ -48,5 +55,4 @@ const updateProduct = async (id: String, name: String, price: Number, promoted: 
 
 
 
-
-export { getAllItems, getTrending, getFoodtruck, updateProduct };
+export { getAllItems, getProduct, updateProduct, postProduct };

@@ -14,13 +14,18 @@ const OrderItemSchema = new Schema({
 
 const OrderSchema = new Schema({
     items: [OrderItemSchema], 
-    orderNumber: {
+    user: {
+        type: Types.ObjectId,
+        ref: 'users',
+        required: true 
+    },
+    totalPrice: {
         type: Number,
         required: true
     },
-    isPending:{
+    isSended: {
         type: Boolean,
-        default: true
+        default: false
     }
 }, {
     timestamps: true,
