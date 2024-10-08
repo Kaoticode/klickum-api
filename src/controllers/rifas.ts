@@ -4,7 +4,9 @@ import {
     getAllItems,
     getOneItem,
     postOneRifa,
-    deleteRifa,
+    updateRifa,
+    getAllRifas,
+    finishRifa
 } from "../services/rifas";
 import { handleHttp } from "../utils/error.handle";
 
@@ -12,6 +14,15 @@ import { handleHttp } from "../utils/error.handle";
 const getItems = async (req: Request, res: Response) => {
   try {
     const response = await getAllItems();
+    res.send(response);
+  } catch (e) {
+    handleHttp(res, "ERROR_GET_ITEMS");
+  }
+};
+
+const getRifas = async (req: Request, res: Response) => {
+  try {
+    const response = await getAllRifas();
     res.send(response);
   } catch (e) {
     handleHttp(res, "ERROR_GET_ITEMS");
@@ -39,20 +50,31 @@ const getItem = async (req: Request, res: Response) => {
   };
   
 
-  const deleteItem = async (req: Request, res: Response) => {
+  const updateItem = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
-      const response = await deleteRifa(id);
+        const isActive = req.body.isActive;
+      const response = await updateRifa(id,isActive);
+      res.send(response);
+    } catch (e) {
+      handleHttp(res, "ERROR_GET_ITEMS");
+    }
+  };
+
+  
+  const putItem = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const isFinished = req.body.isFinished;
+      const response = await finishRifa(id,isFinished);
       res.send(response);
     } catch (e) {
       handleHttp(res, "ERROR_GET_ITEMS");
     }
   };
   
-  
-  
 
 
   
 
-export { getItem, getItems, postRifa, deleteItem };
+export { getItem,putItem, getRifas, getItems, postRifa, updateItem };

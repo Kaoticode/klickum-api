@@ -2,7 +2,16 @@ import RifassModel from "../models/rifas";
 
 const getAllItems = async () => {
   try {
-    const responseItems = await RifassModel.find({ }).sort({ createdAt: -1 });
+    const responseItems = await RifassModel.find({ isActive: true }).sort({ createdAt: -1 });
+    return responseItems;
+  } catch (error) {
+    throw new Error("Error al obtener los productos");
+  }
+};
+
+const getAllRifas = async () => {
+  try {
+    const responseItems = await RifassModel.find({}).sort({ createdAt: -1 });
     return responseItems;
   } catch (error) {
     throw new Error("Error al obtener los productos");
@@ -29,19 +38,41 @@ const getOneItem = async (id: String) => {
 };
 
 
-const deleteRifa = async (id: string) => {
-    try {
-        const deletedRifa = await RifassModel.findByIdAndDelete(id);
-        if (!deletedRifa) {
-            throw new Error(`No se encontró la rifa con id: ${id}`);
-        }
-        return deletedRifa;
-    } catch (error) {
-        console.error('Error al eliminar la rifa:', error);
-        throw new Error('Error al eliminar la rifa');
-    }
+const updateRifa = async (id: string, isActive: Boolean) => {
+  try {
+      const updatedRifa = await RifassModel.findByIdAndUpdate(
+          id,
+          { isActive: isActive }, 
+          { new: true }
+      );
+      if (!updatedRifa) {
+          throw new Error(`No se encontró la rifa con id: ${id}`);
+      }
+      return updatedRifa;
+  } catch (error) {
+      console.error('Error al actualizar la rifa:', error);
+      throw new Error('Error al actualizar la rifa');
+  }
 };
 
+const finishRifa = async (id: string, isFinished: Boolean) => {
+  try {
+      const updatedRifa = await RifassModel.findByIdAndUpdate(
+          id,
+          { isFinished: isFinished }, 
+          { new: true }
+      );
+      if (!updatedRifa) {
+          throw new Error(`No se encontró la rifa con id: ${id}`);
+      }
+      return updatedRifa;
+  } catch (error) {
+      console.error('Error al actualizar la rifa:', error);
+      throw new Error('Error al actualizar la rifa');
+  }
+};
+
+
   
   
 
@@ -51,4 +82,4 @@ const deleteRifa = async (id: string) => {
 
 
 
-export { getAllItems, getOneItem, postOneRifa, deleteRifa };
+export { getAllItems, finishRifa, getAllRifas, getOneItem, postOneRifa, updateRifa };

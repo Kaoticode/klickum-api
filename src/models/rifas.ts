@@ -17,6 +17,14 @@ const RifaSchema = new Schema<Rifa>(
             type: Number,
             required: true,
             default: 50
+        },
+        isActive:{
+            type: Boolean,
+            default: true
+        },
+        isFinished:{
+            type: Boolean,
+            default: false
         }
 
     },

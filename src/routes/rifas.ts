@@ -3,17 +3,23 @@ import {
   getItems,
   getItem,
   postRifa,
-  deleteItem,
+  updateItem,
+  getRifas,
+  putItem
 } from "../controllers/rifas";
 
 const router = Router();
 
 router.get("/", getItems);
 
+router.get("/all", getRifas);
+
 router.get("/:id", getItem);
 
 router.post("/", postRifa);
 
-router.delete("/:id", deleteItem);
+router.patch("/:id", updateItem);
+
+router.put("/:id", putItem);
 
 export { router };
