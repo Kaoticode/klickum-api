@@ -73,6 +73,18 @@ export class ProductService {
 
     if (!product) throw new BadRequestException('Product not found');
 
-    return await this.fileUpload.upload(files);
+    const uploads = await this.fileUpload.upload(files);
+
+    let images = uploads.map((upload) => {
+      return upload.path;
+    });
+
+    images = images.concat(product.images);
+
+    return await this.productModel.findByIdAndUpdate(
+      id,
+      { images },
+      { new: true },
+    );
   }
 }

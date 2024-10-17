@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import mongoose from 'mongoose';
 import { HashService } from 'src/common/service/hash.service';
+import { RoleService } from 'src/role/role.service';
 import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
 import { User } from 'src/user/schema/user.schema';
 import { UserService } from 'src/user/user.service';
@@ -14,6 +15,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly hashService: HashService,
+    private readonly rolesService: RoleService,
   ) {}
 
   async signUp(createUserDto: CreateUserDto) {
@@ -73,5 +75,18 @@ export class AuthService {
     }
 
     return user;
+  }
+
+  async getUserPermissions(userId: string) {
+    const user = await this.userService.findOne({
+      _id: new mongoose.Types.ObjectId(userId),
+    });
+
+    if (!user) throw new BadRequestException();
+
+    const role = await this.rolesService.findOne({
+      _id: new mongoose.Types.ObjectId(user.role._id),
+    });
+    return role.permissions;
   }
 }

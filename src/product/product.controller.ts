@@ -16,12 +16,19 @@ import { UpdateProductDto } from './domain/dto/updateProduct.dto';
 import { ValidateMongoId } from 'src/common/service/validateMongoId';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CustomUploadFileValidation } from 'src/common/service/customUploadFileValidation';
+import { ApiTags } from '@nestjs/swagger';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Resource } from 'src/role/domain/resource.enum';
+import { Action } from 'src/role/domain/action.enum';
+import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
 
+@ApiTags('product')
+@UseGuards(JwtAuthGuard, AuthorizationGuard)
 @Controller('product')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @UseGuards(JwtAuthGuard)
+  @Permissions([{ resource: Resource.product, actions: [Action.create] }])
   @Post()
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);

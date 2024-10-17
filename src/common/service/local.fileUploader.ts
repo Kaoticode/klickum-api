@@ -54,6 +54,6 @@ export class LocalFileUploader implements FileUploader {
     const fileKey = this.generateFileKey(file, timestamp);
 
     fs.writeFileSync(`${this.PATH_STORAGE}/${fileKey}`, file.buffer);
-    return `${this.PATH_STORAGE}/${fileKey}`;
+    return `${fileKey}`;
   };
 }

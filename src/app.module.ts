@@ -17,6 +17,7 @@ import { Order, OrderSchema } from './order/schema/order.schema';
 import { CommonModule } from './common/common.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { join } from 'path';
     RaffleModule,
     CategoryModule,
     CommonModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

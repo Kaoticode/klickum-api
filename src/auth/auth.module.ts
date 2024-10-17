@@ -9,10 +9,15 @@ import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
+import { RoleService } from 'src/role/role.service';
+import { Role, RoleSchema } from 'src/role/schema/role.schema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
+    MongooseModule.forFeature([
+      { name: User.name, schema: UserSchema },
+      { name: Role.name, schema: RoleSchema },
+    ]),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
@@ -29,6 +34,7 @@ import { JwtStrategy } from './strategy/jwt.strategy';
     HashService,
     LocalStrategy,
     JwtStrategy,
+    RoleService,
   ],
 })
 export class AuthModule {}
