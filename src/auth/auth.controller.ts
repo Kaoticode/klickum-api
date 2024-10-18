@@ -1,6 +1,6 @@
+import { Controller } from '@nestjs/common';
 import {
   Body,
-  Controller,
   Get,
   HttpCode,
   HttpStatus,
@@ -15,7 +15,6 @@ import { JwtAuthGuard } from './guard/jwt.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from './guard/authorization.guard';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
-import { Resource } from 'src/role/domain/resource.enum';
 import { Action } from 'src/role/domain/action.enum';
 
 @ApiTags('auth')
@@ -37,13 +36,10 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  @Permissions([{ resource: Resource.auth, actions: [Action.read] }])
+  @Permissions(Action.authRead)
   @Get('me')
-  async getclient(@Request() req) {
-    const { password, ...result } = (
-      await this.authService.me(req.user.sub)
-    ).toJSON();
-
+  async getme(@Request() req) {
+    const { password, ...result } = await this.authService.me(req.user.sub);
     return result;
   }
 }

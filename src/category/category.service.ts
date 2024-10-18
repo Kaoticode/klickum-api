@@ -1,42 +1,35 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { Category } from './schema/category.schema';
-import { Model } from 'mongoose';
-import { InjectModel } from '@nestjs/mongoose';
+import { Injectable } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Category } from './model/category.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 import { CreateCategoryDto } from './domain/dto/createCategory.dto';
 
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectModel(Category.name) private readonly categoryModel: Model<Category>,
+    @InjectRepository(Category)
+    private readonly categoryRepository: Repository<Category>,
   ) {}
 
-  async create(createCategoryDto: CreateCategoryDto) {
-    const categoryExists = await this.categoryModel.findOne({
-      name: createCategoryDto.name,
-    });
-    if (categoryExists) {
-      throw new BadRequestException('Category already exists');
-    }
-
-    const category = new this.categoryModel(createCategoryDto);
-    return category.save();
+  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
+    return await this.categoryRepository.save(createCategoryDto);
   }
 
-  async findOne(categoryPartial: Partial<Category>) {
-    return await this.categoryModel.findOne(categoryPartial);
+  async paginate(options: IPaginationOptions): Promise<Pagination<Category>> {
+    return paginate<Category>(this.categoryRepository, options);
   }
 
   async findOrCreate(name: string) {
-    const categoryExists = await this.categoryModel.findOne({
-      name,
+    const categoryExists = await this.categoryRepository.findOne({
+      where: { name },
     });
     if (categoryExists) return categoryExists;
 
-    const category = new this.categoryModel({ name });
-    return category.save();
-  }
-
-  async findAll() {
-    return await this.categoryModel.find();
+    return await this.categoryRepository.save({ name });
   }
 }

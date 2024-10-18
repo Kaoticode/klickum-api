@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { FileUploadProvider, UploaderProvider } from './service/dependencies';
+import { FileUploadProvider, UploaderProvider } from './services/dependencies';
 
 @Module({
   providers: [FileUploadProvider, UploaderProvider],

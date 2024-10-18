@@ -1,16 +1,23 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
+import { FileUpload } from 'src/common/domain/interfaces/fileUpload.interface';
 import { CreateProductDto } from './domain/dto/createProduct.dto';
-import { InjectModel } from '@nestjs/mongoose';
-import { Product } from './schema/product.schema';
-import { Model } from 'mongoose';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Product } from './model/product.entity';
+import { Repository } from 'typeorm';
 import { CategoryService } from 'src/category/category.service';
 import { UpdateProductDto } from './domain/dto/updateProduct.dto';
-import { FileUpload } from 'src/common/domain/fileUpload.interface';
+import { ObjectId } from 'mongodb';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectModel(Product.name) private readonly productModel: Model<Product>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
     private readonly categoryService: CategoryService,
     @Inject('FileUpload')
     private readonly fileUpload: FileUpload,
@@ -21,70 +28,83 @@ export class ProductService {
   async create(createProductDto: CreateProductDto) {
     const category_name = createProductDto.category;
 
-    const exist = await this.productModel.findOne({
-      name: createProductDto.name,
+    const exist = await this.productRepository.findOne({
+      where: { name: createProductDto.name },
     });
-
     if (exist) throw new BadRequestException('Product already exists');
 
     const category = await this.categoryService.findOrCreate(category_name);
 
-    return new this.productModel({ ...createProductDto, category }).save();
+    return await this.productRepository.save({
+      ...createProductDto,
+      category,
+    });
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
-    const product = await this.productModel.findById(id);
+    if (updateProductDto) {
+      const product = await this.productRepository.findOne({
+        where: { _id: new ObjectId(id) },
+      });
 
-    const { category, ...rest } = updateProductDto;
+      const { category, ...rest } = updateProductDto;
 
-    if (!product) throw new BadRequestException('Product not found');
+      if (!product) throw new BadRequestException('Product not found');
 
-    const update = await this.productModel
-      .findByIdAndUpdate(id, rest, { new: true })
-      .exec();
-
-    if (category) {
-      const change_category = await this.categoryService.findOrCreate(category);
-      return await this.productModel.findByIdAndUpdate(
-        id,
-        { category: change_category },
-        { new: true },
+      const update = await this.productRepository.update(
+        { _id: new ObjectId(id) },
+        rest,
       );
-    }
 
-    return update;
+      if (category) {
+        const change_category = await this.categoryService.findOrCreate(
+          category,
+        );
+        return await this.productRepository.update(
+          { _id: new ObjectId(id) },
+          {
+            category: change_category,
+          },
+        );
+      }
+
+      return update;
+    }
   }
 
   async findById(id: string) {
-    const product = (await this.productModel.findById(id)).populate([
-      {
-        path: 'category',
-        model: 'Category',
-      },
-    ]);
-
+    const product = await this.productRepository.findOne({
+      where: { _id: new ObjectId(id) },
+    });
     if (!product) throw new BadRequestException('Product not found');
-
     return product;
   }
 
   async uploadImg(id: string, files: Express.Multer.File[]) {
-    const product = await this.productModel.findById(id);
+    const product = await this.productRepository.findOne({
+      where: { _id: new ObjectId(id) },
+    });
 
     if (!product) throw new BadRequestException('Product not found');
 
     const uploads = await this.fileUpload.upload(files);
-
     let images = uploads.map((upload) => {
       return upload.path;
     });
 
-    images = images.concat(product.images);
+    if (product.images) {
+      images = images.concat(product.images);
+    }
 
-    return await this.productModel.findByIdAndUpdate(
-      id,
-      { images },
-      { new: true },
+    return await this.productRepository.update(
+      { _id: new ObjectId(id) },
+      {
+        images: images,
+      },
     );
+  }
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
+    return paginate<Product>(this.productRepository, options);
   }
 }

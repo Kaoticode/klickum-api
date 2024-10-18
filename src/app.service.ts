@@ -1,20 +1,26 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { join } from 'path';
-import { RoleService } from './role/role.service';
+import { UserService } from './user/user.service';
+import { ConfigService } from '@nestjs/config';
 import { Resource } from './role/domain/resource.enum';
 import { Action } from './role/domain/action.enum';
+import { RoleService } from './role/role.service';
 import { AuthService } from './auth/auth.service';
-import { ConfigService } from '@nestjs/config';
-import { UserService } from './user/user.service';
+import { RoleStruct } from './role/domain/role.struct';
 
 @Injectable()
 export class AppService {
-  constructor(
-    private readonly rolesService: RoleService,
-    private readonly authService: AuthService,
-    private readonly configService: ConfigService,
+  constructor /*
+  private readonly rolesService: RoleService,
+  private readonly authService: AuthService,
+ 
+  
+  */(
     private readonly userService: UserService,
+    private readonly configService: ConfigService,
+    private readonly roleService: RoleService,
+    private readonly authService: AuthService,
   ) {}
 
   getFile(folder: string, filename: string, res: Response) {
@@ -22,100 +28,41 @@ export class AppService {
     res.sendFile(filePath);
   }
   async loadRoles() {
-    const all_permissions = [
-      {
-        resource: Resource.category,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-      {
-        resource: Resource.product,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-      {
-        resource: Resource.users,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-      {
-        resource: Resource.order,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-      {
-        resource: Resource.ticket,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-      {
-        resource: Resource.raffle,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-    ];
-    const superadmin_permission = all_permissions.concat(
-      {
-        resource: Resource.auth,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-      {
-        resource: Resource.role,
-        actions: [Action.create, Action.read, Action.update, Action.delete],
-      },
-    );
-
-    const roles = [
-      {
-        name: 'superadmin',
-        permissions: superadmin_permission,
-      },
-      {
-        name: 'admin',
-        permissions: all_permissions.concat({
-          resource: Resource.auth,
-          actions: [Action.read, Action.update, Action.delete],
-        }),
-      },
-      {
-        name: 'user',
-        permissions: [
-          {
-            resource: Resource.category,
-            actions: [Action.read],
-          },
-          {
-            resource: Resource.product,
-            actions: [Action.read],
-          },
-          {
-            resource: Resource.order,
-            actions: [Action.read, Action.update, Action.delete, Action.create],
-          },
-          {
-            resource: Resource.auth,
-            actions: [Action.read],
-          },
-        ],
-      },
-    ];
-
-    roles.forEach(async (role) => {
-      const exist = await this.rolesService.findOne({ name: role.name });
-      if (exist) {
-      } else {
-        const permissions = await Promise.all(
-          role.permissions.map((permission) =>
-            this.rolesService.createPermission(permission),
-          ),
+    const permission = Object.values(Action);
+    permission.forEach(async (action) => {
+      const exist = await this.roleService.findOnePermission(action);
+      if (exist) return;
+      await this.roleService.createPermission(action);
+    });
+    RoleStruct.forEach(async (role) => {
+      const exist = await this.roleService.findOne(role.name);
+      if (!exist) {
+        if (role.includedAll) {
+          const all = await this.roleService.findAllPermissions();
+          return await this.roleService.create({
+            name: role.name,
+            permissions: all,
+          });
+        }
+        const selectedPermission = await Promise.all(
+          role.permissions.map(async (action) => {
+            return await this.roleService.findOnePermission(action as Action);
+          }),
         );
-        await this.rolesService.create({
+        return await this.roleService.create({
           name: role.name,
-          permissions,
+          permissions: selectedPermission,
         });
       }
     });
   }
 
   async createSuperAdmin() {
-    const exist = await this.rolesService.findOne({ name: 'superadmin' });
-    const user = await this.userService.findOne({
-      username: this.configService.get('SUPERADMIN_USERNAME'),
-    });
+    const exist = await this.roleService.findOne('superadmin');
+
+    const user = await this.userService.findOneByUsername(
+      this.configService.get('SUPERADMIN_USERNAME'),
+    );
     if (exist && !user) {
       await this.authService.createAuth({
         username: this.configService.get('SUPERADMIN_USERNAME'),

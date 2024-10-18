@@ -19,7 +19,7 @@ export class AuthorizationGuard implements CanActivate {
     if (!request.user.sub) {
       throw new UnauthorizedException('User Id not found');
     }
-    const routePermissions: Permission[] = this.reflector.getAllAndOverride(
+    const routePermissions: string = this.reflector.getAllAndOverride(
       PERMISSIONS_KEY,
       [context.getHandler(), context.getClass()],
     );
@@ -28,24 +28,15 @@ export class AuthorizationGuard implements CanActivate {
     if (!routePermissions) {
       return true;
     }
+    const userPermissions = await this.authService.getUserPermissions(
+      request.user.sub,
+    );
 
     try {
-      const userPermissions = await this.authService.getUserPermissions(
-        request.user.sub,
+      const userPermission = userPermissions.find(
+        (perm) => perm.action === routePermissions,
       );
-
-      for (const routePermission of routePermissions) {
-        const userPermission = userPermissions.find(
-          (perm) => perm.resource === routePermission.resource,
-        );
-
-        if (!userPermission) throw new ForbiddenException();
-
-        const allActionsAvailable = routePermission.actions.every(
-          (requiredAction) => userPermission.actions.includes(requiredAction),
-        );
-        if (!allActionsAvailable) throw new ForbiddenException();
-      }
+      if (!userPermission) throw new ForbiddenException();
     } catch (e) {
       throw new ForbiddenException();
     }

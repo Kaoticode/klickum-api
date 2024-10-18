@@ -5,14 +5,14 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import mongoose from 'mongoose';
-import { HashService } from 'src/common/service/hash.service';
+import { HashService } from 'src/common/services/hash.service';
 import { RoleSetup } from 'src/role/domain/role.enum';
 import { RoleService } from 'src/role/role.service';
 import { CreateUserAuthDto } from 'src/user/domain/dto/createUser.auth.dto';
 import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
-import { User } from 'src/user/schema/user.schema';
+import { User } from 'src/user/model/user.entity';
 import { UserService } from 'src/user/user.service';
+import { ObjectId } from 'typeorm';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +25,7 @@ export class AuthService {
   ) {}
 
   private async getBaseRole() {
-    const role = await this.rolesService.findOne({ name: RoleSetup.user });
+    const role = await this.rolesService.findOne(RoleSetup.user);
     if (!role) {
       throw new InternalServerErrorException('base role not found');
     }
@@ -34,15 +34,13 @@ export class AuthService {
   }
 
   async signUp(createUserDto: CreateUserDto) {
-    const userExists = await this.userService.findOne({
-      username: createUserDto.username,
-    });
+    const { username, email } = createUserDto;
+
+    const userExists = await this.userService.findOneByUsername(username);
 
     const role = await this.getBaseRole();
 
-    const emailExists = await this.userService.findOne({
-      email: createUserDto.email,
-    });
+    const emailExists = await this.userService.findOneByEmail(email);
 
     if (userExists || emailExists) {
       throw new BadRequestException('User already exists');
@@ -62,7 +60,7 @@ export class AuthService {
   }
 
   async validate(username: string, password: string) {
-    const user = await this.userService.findOne({ username });
+    const user = await this.userService.findOneByUsername(username);
 
     if (!user) return null;
 
@@ -84,14 +82,13 @@ export class AuthService {
   }
 
   async me(user_id: string) {
+    /*
     if (!mongoose.isValidObjectId(user_id)) {
       throw new BadRequestException('Invalid user id');
     }
+      */
 
-    const user = await this.userService.findOne({
-      _id: new mongoose.Types.ObjectId(user_id),
-    });
-
+    const user = await this.userService.findOneById(user_id);
     if (!user) {
       throw new BadRequestException('User not found');
     }
@@ -100,35 +97,26 @@ export class AuthService {
   }
 
   async getUserPermissions(userId: string) {
-    const user = await this.userService.findOne({
-      _id: new mongoose.Types.ObjectId(userId),
-    });
+    const user = await this.userService.findOneById(userId);
 
     if (!user) throw new BadRequestException();
 
-    const role = await this.rolesService.findOne({
-      _id: new mongoose.Types.ObjectId(user.role._id),
-    });
+    const role = await this.rolesService.findOneById(user.role._id.toString());
     return role.permissions;
   }
 
   async createAuth(createUserAuthDto: CreateUserAuthDto) {
-    const userExists = await this.userService.findOne({
-      username: createUserAuthDto.username,
-    });
+    const { username, email } = createUserAuthDto;
 
-    const emailExists = await this.userService.findOne({
-      email: createUserAuthDto.email,
-    });
+    const userExists = await this.userService.findOneByUsername(username);
+
+    const emailExists = await this.userService.findOneByEmail(email);
 
     if (userExists || emailExists) {
       throw new BadRequestException('User already exists');
     }
 
-    const role = await this.rolesService.findOne({
-      _id: new mongoose.Types.ObjectId(createUserAuthDto.roleId),
-    });
-
+    const role = await this.rolesService.findOneById(createUserAuthDto.roleId);
     if (!role) {
       throw new BadRequestException('Role not found');
     }
@@ -142,7 +130,6 @@ export class AuthService {
       role,
       password: hashedPassword,
     });
-
     return this.signIn(user);
   }
 }

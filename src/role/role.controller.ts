@@ -1,21 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { RoleService } from './role.service';
-import { CreateRoleDto } from './domain/dto/create-role.dto';
+import { Controller } from '@nestjs/common';
 
 @Controller('role')
-export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
-
-  @Post()
-  create(@Body() createRoleDto: CreateRoleDto) {
-    return this.roleService.create(createRoleDto);
-  }
-}
+export class RoleController {}

@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
-import { FileUploader } from '../domain/fileUploader.interface';
-import { UploadedFile } from '../domain/uploadedFile.interface';
 import * as fs from 'fs';
+import { FileUploader } from '../domain/interfaces/fileUploader.interface';
+import { UploadedFile } from '../domain/interfaces/uploadedFile.interface';
 
 export class LocalFileUploader implements FileUploader {
   private PATH_STORAGE = `${process.cwd()}/public`;

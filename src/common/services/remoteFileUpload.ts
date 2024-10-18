@@ -1,8 +1,7 @@
 import { BadRequestException, Inject } from '@nestjs/common';
-import { File } from '../domain/file.interface';
-import { FileUpload } from '../domain/fileUpload.interface';
-import { UploadedFile } from '../domain/uploadedFile.interface';
-import { FileUploader } from '../domain/fileUploader.interface';
+import { FileUpload } from '../domain/interfaces/fileUpload.interface';
+import { FileUploader } from '../domain/interfaces/fileUploader.interface';
+import { UploadedFile } from '../domain/interfaces/uploadedFile.interface';
 
 export class RemoteFileUpload implements FileUpload {
   constructor(
