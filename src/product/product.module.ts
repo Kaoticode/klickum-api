@@ -17,7 +17,12 @@ import { LocalStrategy } from 'src/auth/strategy/local.strategy';
 import { JwtStrategy } from 'src/auth/strategy/jwt.strategy';
 import { RoleService } from 'src/role/role.service';
 import { User, UserSchema } from 'src/user/schema/user.schema';
-import { Role, RoleSchema } from 'src/role/schema/role.schema';
+import {
+  Permission,
+  PermissionSchema,
+  Role,
+  RoleSchema,
+} from 'src/role/schema/role.schema';
 
 @Module({
   imports: [
@@ -26,6 +31,7 @@ import { Role, RoleSchema } from 'src/role/schema/role.schema';
       { name: Product.name, schema: ProductSchema },
       { name: User.name, schema: UserSchema },
       { name: Role.name, schema: RoleSchema },
+      { name: Permission.name, schema: PermissionSchema },
     ]),
   ],
   controllers: [ProductController],

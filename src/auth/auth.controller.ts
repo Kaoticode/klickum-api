@@ -13,6 +13,10 @@ import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
 import { LocalAuthGuard } from './guard/local.auth.guard';
 import { JwtAuthGuard } from './guard/jwt.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { AuthorizationGuard } from './guard/authorization.guard';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Resource } from 'src/role/domain/resource.enum';
+import { Action } from 'src/role/domain/action.enum';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -32,7 +36,8 @@ export class AuthController {
     return this.authService.signIn(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, AuthorizationGuard)
+  @Permissions([{ resource: Resource.auth, actions: [Action.read] }])
   @Get('me')
   async getclient(@Request() req) {
     const { password, ...result } = (

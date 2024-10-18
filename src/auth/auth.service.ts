@@ -1,9 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import mongoose from 'mongoose';
 import { HashService } from 'src/common/service/hash.service';
+import { RoleSetup } from 'src/role/domain/role.enum';
 import { RoleService } from 'src/role/role.service';
+import { CreateUserAuthDto } from 'src/user/domain/dto/createUser.auth.dto';
 import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
 import { User } from 'src/user/schema/user.schema';
 import { UserService } from 'src/user/user.service';
@@ -18,12 +24,27 @@ export class AuthService {
     private readonly rolesService: RoleService,
   ) {}
 
+  private async getBaseRole() {
+    const role = await this.rolesService.findOne({ name: RoleSetup.user });
+    if (!role) {
+      throw new InternalServerErrorException('base role not found');
+    }
+
+    return role;
+  }
+
   async signUp(createUserDto: CreateUserDto) {
     const userExists = await this.userService.findOne({
       username: createUserDto.username,
     });
 
-    if (userExists) {
+    const role = await this.getBaseRole();
+
+    const emailExists = await this.userService.findOne({
+      email: createUserDto.email,
+    });
+
+    if (userExists || emailExists) {
       throw new BadRequestException('User already exists');
     }
 
@@ -33,6 +54,7 @@ export class AuthService {
 
     const user = await this.userService.create({
       ...createUserDto,
+      role,
       password: hashedPassword,
     });
 
@@ -88,5 +110,39 @@ export class AuthService {
       _id: new mongoose.Types.ObjectId(user.role._id),
     });
     return role.permissions;
+  }
+
+  async createAuth(createUserAuthDto: CreateUserAuthDto) {
+    const userExists = await this.userService.findOne({
+      username: createUserAuthDto.username,
+    });
+
+    const emailExists = await this.userService.findOne({
+      email: createUserAuthDto.email,
+    });
+
+    if (userExists || emailExists) {
+      throw new BadRequestException('User already exists');
+    }
+
+    const role = await this.rolesService.findOne({
+      _id: new mongoose.Types.ObjectId(createUserAuthDto.roleId),
+    });
+
+    if (!role) {
+      throw new BadRequestException('Role not found');
+    }
+
+    const { password } = createUserAuthDto;
+
+    const hashedPassword = await this.hashService.hash(password);
+
+    const user = await this.userService.create({
+      ...createUserAuthDto,
+      role,
+      password: hashedPassword,
+    });
+
+    return this.signIn(user);
   }
 }

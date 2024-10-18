@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { Document, Types } from 'mongoose';
-import { UserModule } from '../user.module';
 import { Role } from 'src/role/schema/role.schema';
 
 export type UserDocument = User & Document;
@@ -15,6 +14,8 @@ export class User {
   password: string;
   @Prop()
   phone: string;
+  @Prop()
+  email: string;
 
   @Prop({ default: true })
   isActive: boolean;

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -18,10 +18,12 @@ import { CommonModule } from './common/common.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { RoleModule } from './role/role.module';
+import { environmentValidate } from './common/domain/environment.validate';
+import { Permission, PermissionSchema } from './role/schema/role.schema';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ validate: environmentValidate, isGlobal: true }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
@@ -36,6 +38,7 @@ import { RoleModule } from './role/role.module';
       { name: Product.name, schema: ProductSchema },
       { name: Category.name, schema: CategorySchema },
       { name: Order.name, schema: OrderSchema },
+      { name: Permission.name, schema: PermissionSchema },
     ]),
     AuthModule,
     OrderModule,
@@ -50,4 +53,10 @@ import { RoleModule } from './role/role.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly appService: AppService) {}
+  async onModuleInit() {
+    await this.appService.loadRoles();
+    await this.appService.createSuperAdmin();
+  }
+}

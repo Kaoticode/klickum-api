@@ -33,7 +33,7 @@ export class ProductController {
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
-
+  @Permissions([{ resource: Resource.product, actions: [Action.update] }])
   @Patch(':id')
   async update(
     @Param('id', ValidateMongoId) id: string,
@@ -42,11 +42,13 @@ export class ProductController {
     return this.productService.update(id, updateProductDto);
   }
 
+  @Permissions([{ resource: Resource.product, actions: [Action.read] }])
   @Get(':id')
   async findById(@Param('id', ValidateMongoId) id: string) {
     return this.productService.findById(id);
   }
 
+  @Permissions([{ resource: Resource.product, actions: [Action.update] }])
   @Patch('upload/:id')
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'img', maxCount: 5 }], {

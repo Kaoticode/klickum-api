@@ -10,13 +10,19 @@ import { ConfigService } from '@nestjs/config';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { RoleService } from 'src/role/role.service';
-import { Role, RoleSchema } from 'src/role/schema/role.schema';
+import {
+  Permission,
+  PermissionSchema,
+  Role,
+  RoleSchema,
+} from 'src/role/schema/role.schema';
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       { name: User.name, schema: UserSchema },
       { name: Role.name, schema: RoleSchema },
+      { name: Permission.name, schema: PermissionSchema },
     ]),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
@@ -36,5 +42,6 @@ import { Role, RoleSchema } from 'src/role/schema/role.schema';
     JwtStrategy,
     RoleService,
   ],
+  exports: [AuthService],
 })
 export class AuthModule {}

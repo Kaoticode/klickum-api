@@ -1,9 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Resource } from '../domain/resource.enum';
 import { Action } from '../domain/action.enum';
-import { Types } from 'mongoose';
+import mongoose, { mongo, Types } from 'mongoose';
 @Schema()
-class Permission {
+export class Permission {
   _id: Types.ObjectId;
 
   @Prop({ required: true, enum: Resource })
@@ -19,9 +19,21 @@ export class Role {
 
   @Prop({ required: true })
   name: string;
-
-  @Prop({ required: true, type: [Permission] })
+  /*
+  @Prop({
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: Permission.name,
+        required: true,
+      },
+    ],
+  })
   permissions: Permission[];
+  */
+  @Prop([{ type: mongoose.Schema.Types.ObjectId, ref: Permission.name }])
+  permissions: [Permission];
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);
+export const PermissionSchema = SchemaFactory.createForClass(Permission);
