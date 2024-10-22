@@ -1,32 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { Response } from 'express';
 import { join } from 'path';
-import { UserService } from './user/user.service';
-import { ConfigService } from '@nestjs/config';
-import { Resource } from './role/domain/resource.enum';
-import { Action } from './role/domain/action.enum';
-import { RoleService } from './role/role.service';
-import { AuthService } from './auth/auth.service';
-import { RoleStruct } from './role/domain/role.struct';
 
 @Injectable()
 export class AppService {
-  constructor /*
-  private readonly rolesService: RoleService,
-  private readonly authService: AuthService,
- 
-  
-  */(
-    private readonly userService: UserService,
-    private readonly configService: ConfigService,
-    private readonly roleService: RoleService,
-    private readonly authService: AuthService,
-  ) {}
-
   getFile(folder: string, filename: string, res: Response) {
     const filePath = join(process.cwd(), 'public', folder, filename);
     res.sendFile(filePath);
   }
+  /*
   async loadRoles() {
     const permission = Object.values(Action);
     permission.forEach(async (action) => {
@@ -73,4 +55,5 @@ export class AppService {
       });
     }
   }
+    */
 }

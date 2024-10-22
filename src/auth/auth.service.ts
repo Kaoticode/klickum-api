@@ -75,7 +75,7 @@ export class AuthService {
   }
 
   async signIn(user: User) {
-    const payload = { username: user.username, sub: user._id };
+    const payload = { username: user.username, sub: user.id };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -92,8 +92,9 @@ export class AuthService {
     if (!user) {
       throw new BadRequestException('User not found');
     }
-
-    return user;
+    const { password, role, ...result } = user;
+    const { permissions, ...roleResult } = role;
+    return { ...result, role: roleResult };
   }
 
   async getUserPermissions(userId: string) {
@@ -101,7 +102,7 @@ export class AuthService {
 
     if (!user) throw new BadRequestException();
 
-    const role = await this.rolesService.findOneById(user.role._id.toString());
+    const role = await this.rolesService.findOneById(user.role.id);
     return role.permissions;
   }
 

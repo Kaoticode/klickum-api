@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  ParseUUIDPipe,
   Patch,
   Post,
   Query,
@@ -17,7 +18,6 @@ import { CreateProductDto } from './domain/dto/createProduct.dto';
 import { UpdateProductDto } from './domain/dto/updateProduct.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { CustomUploadFileValidation } from 'src/common/services/customUploadFileValidation';
-import { ValidateMongoId } from 'src/common/services/validate.mongoId';
 import { getFileValidator } from 'src/common/services/fileRequire.validation';
 
 @ApiTags('product')
@@ -33,14 +33,14 @@ export class ProductController {
 
   @Patch(':id')
   async update(
-    @Param('id', ValidateMongoId) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productService.update(id, updateProductDto);
   }
 
   @Get(':id')
-  async findById(@Param('id', ValidateMongoId) id: string) {
+  async findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.productService.findById(id);
   }
 
@@ -64,7 +64,7 @@ export class ProductController {
     }),
   )
   async uploadFile(
-    @Param('id', ValidateMongoId) id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @UploadedFiles(getFileValidator())
     files: {
       img: Express.Multer.File[];

@@ -1,11 +1,9 @@
-import { Role } from 'src/role/model/role.entity';
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { BaseEntity } from '../../common/model/base.entity';
+import { Role } from '../../role/model/role.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
-export class User {
-  @ObjectIdColumn()
-  _id: ObjectId;
-
+export class User extends BaseEntity {
   @Column()
   username: string;
   @Column()
@@ -14,8 +12,7 @@ export class User {
   phone: string;
   @Column()
   email: string;
-  @Column()
-  isActive: boolean;
-  @Column((type) => Role)
+
+  @ManyToOne(() => Role, { eager: true })
   role: Role;
 }

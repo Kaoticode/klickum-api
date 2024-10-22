@@ -3,7 +3,6 @@ import { Repository } from 'typeorm';
 import { User } from './model/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './domain/dto/createUser.dto';
-import { ObjectId } from 'mongodb';
 
 @Injectable()
 export class UserService {
@@ -24,7 +23,7 @@ export class UserService {
   }
   async findOneById(id: string) {
     return await this.userRepository.findOne({
-      where: { _id: new ObjectId(id) },
+      where: { id },
       relations: ['role'],
     });
   }

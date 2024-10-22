@@ -1,20 +1,31 @@
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Action } from '../domain/action.enum';
 
 @Entity()
-export class Permission {
-  @ObjectIdColumn()
-  _id: ObjectId;
-  @Column()
-  action: Action;
+export class Role {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: false })
+  name: string;
+  @ManyToMany(() => Permission, { eager: true })
+  @JoinTable({ name: 'role_permissions' })
+  permissions: Permission[];
 }
 
 @Entity()
-export class Role {
-  @ObjectIdColumn()
-  _id: ObjectId;
-  @Column({ unique: false })
-  name: string;
-  @Column((type) => Permission)
-  permissions: Permission[];
+export class Permission {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  action: Action;
 }

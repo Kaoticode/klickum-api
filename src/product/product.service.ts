@@ -44,24 +44,21 @@ export class ProductService {
   async update(id: string, updateProductDto: UpdateProductDto) {
     if (updateProductDto) {
       const product = await this.productRepository.findOne({
-        where: { _id: new ObjectId(id) },
+        where: { id },
       });
 
       const { category, ...rest } = updateProductDto;
 
       if (!product) throw new BadRequestException('Product not found');
 
-      const update = await this.productRepository.update(
-        { _id: new ObjectId(id) },
-        rest,
-      );
+      const update = await this.productRepository.update({ id }, rest);
 
       if (category) {
         const change_category = await this.categoryService.findOrCreate(
           category,
         );
         return await this.productRepository.update(
-          { _id: new ObjectId(id) },
+          { id },
           {
             category: change_category,
           },
@@ -74,13 +71,14 @@ export class ProductService {
 
   async findById(id: string) {
     const product = await this.productRepository.findOne({
-      where: { _id: new ObjectId(id) },
+      where: { id },
     });
     if (!product) throw new BadRequestException('Product not found');
     return product;
   }
 
   async uploadImg(id: string, files: Express.Multer.File[]) {
+    /*
     const product = await this.productRepository.findOne({
       where: { _id: new ObjectId(id) },
     });
@@ -102,6 +100,7 @@ export class ProductService {
         images: images,
       },
     );
+    */
   }
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {

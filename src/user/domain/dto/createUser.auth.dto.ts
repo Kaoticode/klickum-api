@@ -38,8 +38,6 @@ export class CreateUserAuthDto {
   phone: string;
 
   @ApiProperty()
-  @Transform(({ value }): string => (value as string).trim())
-  @IsString()
   @IsNotEmpty()
-  roleId: string;
+  roleId: number;
 }

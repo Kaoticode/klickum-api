@@ -16,6 +16,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from './guard/authorization.guard';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Action } from 'src/role/domain/action.enum';
+import { CreateUserAuthDto } from 'src/user/domain/dto/createUser.auth.dto';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -39,7 +40,12 @@ export class AuthController {
   @Permissions(Action.authRead)
   @Get('me')
   async getme(@Request() req) {
-    const { password, ...result } = await this.authService.me(req.user.sub);
-    return result;
+    return await this.authService.me(req.user.sub);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('register')
+  async createAuth(@Body() createUserAuthDto: CreateUserAuthDto) {
+    return await this.authService.createAuth(createUserAuthDto);
   }
 }

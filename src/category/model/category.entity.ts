@@ -1,12 +1,12 @@
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { BaseEntity } from '../../common/model/base.entity';
+import { Product } from '../../product/model/product.entity';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 @Entity()
-export class Category {
-  @ObjectIdColumn()
-  id: ObjectId;
-
+export class Category extends BaseEntity {
   @Column()
   name: string;
-  @Column()
-  isActive: boolean;
+
+  @OneToMany(() => Product, (product) => product.category)
+  products: Product[];
 }

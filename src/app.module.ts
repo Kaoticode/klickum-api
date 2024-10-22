@@ -12,25 +12,19 @@ import { CategoryModule } from './category/category.module';
 import { CommonModule } from './common/common.module';
 import { ProductModule } from './product/product.module';
 import { RoleModule } from './role/role.module';
+import { ItemModule } from './item/item.module';
+import typeorm from './config/typeorm';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
     TypeOrmModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => ({
-        //uri: configService.get<string>('MONGODB_URI'),
-        name: 'default',
-        type: 'mongodb',
-        database: configService.get<string>('DB_NAME'),
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        useNewUrlParser: true,
-        autoLoadEntities: true,
-        entities: [join(__dirname, '**/**.entity{.ts,.js}')],
-      }),
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
       inject: [ConfigService],
     }),
     UserModule,
@@ -39,14 +33,13 @@ import { RoleModule } from './role/role.module';
     CommonModule,
     ProductModule,
     RoleModule,
+    ItemModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements OnModuleInit {
   constructor(private readonly appService: AppService) {}
-  async onModuleInit() {
-    await this.appService.loadRoles();
-    await this.appService.createSuperAdmin();
-  }
+  async onModuleInit() {}
 }

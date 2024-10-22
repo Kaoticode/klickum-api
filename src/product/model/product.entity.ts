@@ -1,11 +1,9 @@
-import { Category } from 'src/category/model/category.entity';
-import { Column, Entity, ObjectId, ObjectIdColumn } from 'typeorm';
+import { Category } from '../../category/model/category.entity';
+import { BaseEntity } from '../../common/model/base.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Product {
-  @ObjectIdColumn()
-  _id: ObjectId;
-
+export class Product extends BaseEntity {
   @Column()
   name: string;
   @Column()
@@ -14,11 +12,9 @@ export class Product {
   amount: number;
   @Column()
   price: number;
-  @Column()
-  images: string[];
-  @Column()
-  isActive: boolean;
+  //@Column()
+  // images: string[];
 
-  @Column((type) => Category)
+  @ManyToOne(() => Category, { eager: true })
   category: Category;
 }

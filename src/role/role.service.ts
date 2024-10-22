@@ -5,6 +5,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateRoleDto } from './domain/dto/create-role.dto';
 import { ObjectId } from 'mongodb';
 import { Action } from './domain/action.enum';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class RoleService {
@@ -25,10 +30,8 @@ export class RoleService {
   async findOne(name: Role['name']) {
     return await this.roleRepository.findOne({ where: { name } });
   }
-  async findOneById(id: string) {
-    const _id = new ObjectId(id);
-
-    return await this.roleRepository.findOne({ where: { _id } });
+  async findOneById(id: number) {
+    return await this.roleRepository.findOne({ where: { id } });
   }
 
   async findOnePermission(action: Action) {
@@ -39,5 +42,9 @@ export class RoleService {
 
   async findAllPermissions() {
     return await this.permissionRepository.find();
+  }
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Role>> {
+    return paginate<Role>(this.roleRepository, options);
   }
 }
