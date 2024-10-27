@@ -15,6 +15,7 @@ import { RoleModule } from './role/role.module';
 import { ItemModule } from './item/item.module';
 import typeorm from './config/typeorm';
 import { OrderModule } from './order/order.module';
+import { StatusModule } from './status/status.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { OrderModule } from './order/order.module';
     RoleModule,
     ItemModule,
     OrderModule,
+    StatusModule,
   ],
   controllers: [AppController],
   providers: [AppService],

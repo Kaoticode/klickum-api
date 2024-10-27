@@ -4,6 +4,8 @@ import { BaseRepository } from '../common/services/baseRepository';
 import { DataSource } from 'typeorm';
 import { Order } from './model/order.entity';
 import { REQUEST } from '@nestjs/core';
+import { Item } from '../item/model/item.entity';
+import { Status } from '../status/model/status.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderRepository extends BaseRepository {
@@ -21,15 +23,37 @@ export class OrderRepository extends BaseRepository {
     });
   }
 
-  async createOrder(userId: string) {
+  async createOrder(userId: string, status: Status) {
     const ordersRepository = this.getRepository(Order);
 
     const order = ordersRepository.create({
       user: { id: userId },
-      totalPrice: 10,
+      status,
     });
     await ordersRepository.insert(order);
 
     return order;
+  }
+
+  async setTotalPrice(order: Order, items: Item[]) {
+    const total_unit_price = items.map((item) => {
+      return item.product.price * item.amount;
+    });
+    const totalPrice = total_unit_price.reduce((a, b) => a + b, 0);
+    await this.getRepository(Order).update({ id: order.id }, { totalPrice });
+  }
+  async getOrderRepository() {
+    return this.getRepository(Order).createQueryBuilder('order');
+  }
+
+  async findOne(id: string) {
+    return this.getRepository(Order).findOne({
+      where: { id },
+      relations: { items: { product: true }, status: true },
+      select: {
+        status: { name: true },
+        items: true,
+      },
+    });
   }
 }

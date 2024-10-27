@@ -1,3 +1,6 @@
 export interface UploadedFile {
-  path: string;
+  url: string;
+  mimetype: string;
+  filename: string;
+  size: number;
 }

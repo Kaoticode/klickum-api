@@ -12,6 +12,7 @@ import {
   paginate,
   Pagination,
 } from 'nestjs-typeorm-paginate';
+import { StatusService } from 'src/status/status.service';
 
 @Injectable()
 export class ProductService {
@@ -21,12 +22,15 @@ export class ProductService {
     private readonly categoryService: CategoryService,
     @Inject('FileUpload')
     private readonly fileUpload: FileUpload,
+    private readonly statusService: StatusService,
   ) {
-    this.fileUpload.folder('product');
+    this.fileUpload.folder('');
   }
 
   async create(createProductDto: CreateProductDto) {
     const category_name = createProductDto.category;
+
+    const status = await this.statusService.findOne('available');
 
     const exist = await this.productRepository.findOne({
       where: { name: createProductDto.name },
@@ -38,6 +42,7 @@ export class ProductService {
     return await this.productRepository.save({
       ...createProductDto,
       category,
+      status,
     });
   }
 
@@ -78,32 +83,23 @@ export class ProductService {
   }
 
   async uploadImg(id: string, files: Express.Multer.File[]) {
-    /*
     const product = await this.productRepository.findOne({
-      where: { _id: new ObjectId(id) },
+      where: { id },
     });
 
     if (!product) throw new BadRequestException('Product not found');
 
     const uploads = await this.fileUpload.upload(files);
-    let images = uploads.map((upload) => {
-      return upload.path;
-    });
-
-    if (product.images) {
-      images = images.concat(product.images);
-    }
-
-    return await this.productRepository.update(
-      { _id: new ObjectId(id) },
-      {
-        images: images,
-      },
-    );
-    */
+    console.log(uploads);
   }
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
-    return paginate<Product>(this.productRepository, options);
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.status', 'status')
+      .leftJoinAndSelect('product.category', 'category')
+      .select(['product', 'status.name', 'category.name']);
+
+    return paginate<Product>(query, options);
   }
 }

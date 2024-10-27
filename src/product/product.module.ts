@@ -9,9 +9,10 @@ import {
 } from 'src/common/services/dependencies';
 import { CategoryService } from 'src/category/category.service';
 import { Category } from 'src/category/model/category.entity';
+import { StatusModule } from 'src/status/status.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Product, Category])],
+  imports: [TypeOrmModule.forFeature([Product, Category]), StatusModule],
   providers: [
     ProductService,
     CategoryService,

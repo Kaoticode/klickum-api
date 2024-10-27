@@ -7,6 +7,6 @@ export class ItemService {
   constructor(private itemRepository: ItemsRepository) {}
 
   async createItems(orderId: string, items: CreateItemDto[]) {
-    await this.itemRepository.createItems(orderId, items);
+    return await this.itemRepository.createItems(orderId, items);
   }
 }
