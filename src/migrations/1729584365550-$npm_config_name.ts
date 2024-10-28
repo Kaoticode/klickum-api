@@ -16,6 +16,7 @@ export class $npmConfigName1729584365550 implements MigrationInterface {
       usersDelete = 'users.delete',
       orderCreate = 'order.create',
       orderRead = 'order.read',
+      orderAdminRead = 'order.admin.read',
       orderUpdate = 'order.update',
       orderDelete = 'order.delete',
       roleCreate = 'role.create',
@@ -24,6 +25,10 @@ export class $npmConfigName1729584365550 implements MigrationInterface {
       roleDelete = 'role.delete',
       authCreate = 'auth.create',
       authRead = 'auth.read',
+      promotionCreate = 'promotion.create',
+      promotionRead = 'promotion.read',
+      promotionUpdate = 'promotion.update',
+      promotionDelete = 'promotion.delete',
     }
 
     enum RoleSetup {
@@ -50,6 +55,7 @@ export class $npmConfigName1729584365550 implements MigrationInterface {
           Action.usersDelete,
           Action.orderCreate,
           Action.orderRead,
+          Action.orderAdminRead,
           Action.orderUpdate,
           Action.orderDelete,
           Action.roleCreate,
@@ -58,6 +64,10 @@ export class $npmConfigName1729584365550 implements MigrationInterface {
           Action.roleDelete,
           Action.authCreate,
           Action.authRead,
+          Action.promotionCreate,
+          Action.promotionRead,
+          Action.promotionUpdate,
+          Action.promotionDelete,
         ],
       },
       {
@@ -77,9 +87,14 @@ export class $npmConfigName1729584365550 implements MigrationInterface {
           Action.usersDelete,
           Action.orderCreate,
           Action.orderRead,
+          Action.orderAdminRead,
           Action.orderUpdate,
           Action.orderDelete,
           Action.authRead,
+          Action.promotionCreate,
+          Action.promotionRead,
+          Action.promotionUpdate,
+          Action.promotionDelete,
         ],
       },
       {
@@ -88,7 +103,6 @@ export class $npmConfigName1729584365550 implements MigrationInterface {
         permissions: [
           Action.categoryRead,
           Action.productRead,
-          Action.usersRead,
           Action.orderRead,
           Action.authRead,
         ],

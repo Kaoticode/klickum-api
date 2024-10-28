@@ -12,6 +12,7 @@ export enum Action {
   usersDelete = 'users.delete',
   orderCreate = 'order.create',
   orderRead = 'order.read',
+  orderAdminRead = 'order.admin.read',
   orderUpdate = 'order.update',
   orderDelete = 'order.delete',
   roleCreate = 'role.create',
@@ -20,4 +21,8 @@ export enum Action {
   roleDelete = 'role.delete',
   authCreate = 'auth.create',
   authRead = 'auth.read',
+  promotionCreate = 'promotion.create',
+  promotionRead = 'promotion.read',
+  promotionUpdate = 'promotion.update',
+  promotionDelete = 'promotion.delete',
 }

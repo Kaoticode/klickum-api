@@ -16,6 +16,7 @@ import { ItemModule } from './item/item.module';
 import typeorm from './config/typeorm';
 import { OrderModule } from './order/order.module';
 import { StatusModule } from './status/status.module';
+import { PromotionModule } from './promotion/promotion.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { StatusModule } from './status/status.module';
     ItemModule,
     OrderModule,
     StatusModule,
+    PromotionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

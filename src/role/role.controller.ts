@@ -4,15 +4,23 @@ import {
   Get,
   ParseIntPipe,
   Query,
+  UseGuards,
 } from '@nestjs/common';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { RoleService } from './role.service';
+import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
+import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Action } from './domain/action.enum';
 
+@ApiTags('role')
+@UseGuards(JwtAuthGuard, AuthorizationGuard)
 @Controller('role')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Get()
+  @Permissions(Action.roleRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async findAll(

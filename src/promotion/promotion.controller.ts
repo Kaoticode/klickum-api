@@ -8,35 +8,35 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { CategoryService } from './category.service';
-import { CreateCategoryDto } from './domain/dto/createCategory.dto';
-import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { PromotionService } from './promotion.service';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { CreatePromotionDto } from './domain/dto/createPromotion.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Action } from 'src/role/domain/action.enum';
 
-@ApiTags('category')
-@Controller('category')
-export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+@ApiTags('promotion')
+@UseGuards(JwtAuthGuard, AuthorizationGuard)
+@Controller('promotion')
+export class PromotionController {
+  constructor(private readonly promotionService: PromotionService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  @Permissions(Action.categoryCreate)
-  @ApiBody({ type: CreateCategoryDto })
-  async create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoryService.create(createCategoryDto);
+  @Permissions(Action.promotionCreate)
+  async create(@Body() createPromotionDto: CreatePromotionDto) {
+    return await this.promotionService.create(createPromotionDto);
   }
 
   @Get()
+  @Permissions(Action.promotionRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
-  async findAll(
+  async paginateAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
     limit = limit > 100 ? 100 : limit;
-    return this.categoryService.paginate({ page, limit });
+    return await this.promotionService.paginateAll({ page, limit });
   }
 }

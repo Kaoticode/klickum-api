@@ -19,14 +19,18 @@ import { OrderService } from './order.service';
 import { CreateItemDto } from '../item/domain/dto/createItem.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Action } from 'src/role/domain/action.enum';
 
+@ApiTags('order')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
 @Controller('order')
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
   @Post()
+  @Permissions(Action.orderCreate)
   @UseInterceptors(TransactionInterceptor)
   async createOrder(
     @Body(new ParseArrayPipe({ items: CreateItemDto }))
@@ -40,6 +44,7 @@ export class OrderController {
   }
 
   @Get('history')
+  @Permissions(Action.orderRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getUserOrders(
@@ -54,6 +59,7 @@ export class OrderController {
     });
   }
   @Get()
+  @Permissions(Action.orderAdminRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getAllOrders(
@@ -68,6 +74,7 @@ export class OrderController {
     });
   }
 
+  @Permissions(Action.orderRead)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.orderService.findOne(id);

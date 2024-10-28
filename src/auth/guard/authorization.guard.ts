@@ -23,7 +23,6 @@ export class AuthorizationGuard implements CanActivate {
       PERMISSIONS_KEY,
       [context.getHandler(), context.getClass()],
     );
-    console.log(` the route permissions are ${routePermissions}`);
 
     if (!routePermissions) {
       return true;

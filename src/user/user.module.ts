@@ -5,9 +5,10 @@ import { User } from './model/user.entity';
 import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { UserTransaccionService } from './user.transaccion.service';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), AuthModule],
   providers: [UserService, UserRepository, UserTransaccionService],
   exports: [UserService, UserTransaccionService],
   controllers: [UserController],

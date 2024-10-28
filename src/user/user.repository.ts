@@ -18,4 +18,8 @@ export class UserRepository extends BaseRepository {
       where: { id },
     });
   }
+
+  getQueryBuilder() {
+    return this.getRepository(User).createQueryBuilder('user');
+  }
 }
