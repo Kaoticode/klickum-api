@@ -7,12 +7,12 @@ export class RemoteFileUpload implements FileUpload {
   constructor(
     @Inject('FileUploader') private readonly fileUploader: FileUploader,
   ) {}
-  folder(path: string): void {
-    this.fileUploader.path = path;
-  }
 
-  async upload(files: Express.Multer.File[]): Promise<UploadedFile[]> {
-    const uploadedFiles = await this.fileUploader.upload(files);
+  async upload(
+    files: Express.Multer.File[],
+    { path }: { path: string },
+  ): Promise<UploadedFile[]> {
+    const uploadedFiles = await this.fileUploader.upload(files, { path });
 
     if (!uploadedFiles) {
       throw new BadRequestException('Failed to upload files');

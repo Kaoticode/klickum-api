@@ -13,6 +13,8 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 import { StatusService } from 'src/status/status.service';
+import { Image } from 'src/common/model/image.entity';
+import { ImageRepository } from '../common/services/imageRepository';
 
 @Injectable()
 export class ProductService {
@@ -23,9 +25,8 @@ export class ProductService {
     @Inject('FileUpload')
     private readonly fileUpload: FileUpload,
     private readonly statusService: StatusService,
-  ) {
-    this.fileUpload.folder('');
-  }
+    private readonly imageRepository: ImageRepository,
+  ) {}
 
   async create(createProductDto: CreateProductDto) {
     const category_name = createProductDto.category;
@@ -89,8 +90,16 @@ export class ProductService {
 
     if (!product) throw new BadRequestException('Product not found');
 
-    const uploads = await this.fileUpload.upload(files);
-    console.log(uploads);
+    const uploads = await this.fileUpload.upload(files, { path: 'products' });
+
+    const images = await Promise.all(
+      uploads.map((upload) => {
+        return this.imageRepository.create(upload);
+      }),
+    );
+
+    product.images = images;
+    return await this.productRepository.save(product);
   }
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
@@ -98,7 +107,8 @@ export class ProductService {
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.status', 'status')
       .leftJoinAndSelect('product.category', 'category')
-      .select(['product', 'status.name', 'category.name']);
+      .innerJoinAndSelect('product.images', 'image')
+      .select(['product', 'status.name', 'category.name', 'image.url']);
 
     return paginate<Product>(query, options);
   }

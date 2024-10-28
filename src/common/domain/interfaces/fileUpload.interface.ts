@@ -1,6 +1,8 @@
 import { UploadedFile } from './uploadedFile.interface';
 
 export interface FileUpload {
-  upload: (files: Express.Multer.File[]) => Promise<UploadedFile[]>;
-  folder(path: string): void;
+  upload: (
+    files: Express.Multer.File[],
+    { path }: { path: string },
+  ) => Promise<UploadedFile[]>;
 }

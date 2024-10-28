@@ -4,7 +4,7 @@ import { FileUploader } from '../domain/interfaces/fileUploader.interface';
 import { UploadedFile } from '../domain/interfaces/uploadedFile.interface';
 
 export class LocalFileUploader implements FileUploader {
-  private PATH_STORAGE = ``;
+  private PATH_STORAGE = `${process.cwd()}/public`;
   private generateFileKey(
     file: Express.Multer.File,
     timestamp: number,
@@ -13,27 +13,19 @@ export class LocalFileUploader implements FileUploader {
     console.log(originalFileName);
     return `${uuidv4()}-${timestamp}.${originalFileName[1]}`;
   }
-
-  public set path(path: string) {
-    this.PATH_STORAGE = `${this.PATH_STORAGE}/${path}`;
-  }
-
   upload = async (
     files: Express.Multer.File | Express.Multer.File[],
+    { path },
   ): Promise<UploadedFile | UploadedFile[] | undefined> => {
-    if (
-      !this.checkIfFileOrDirectoryExists(
-        `${process.cwd()}/public${this.PATH_STORAGE}`,
-      )
-    ) {
-      fs.mkdirSync(`${process.cwd()}/public${this.PATH_STORAGE}`);
+    if (!this.checkIfFileOrDirectoryExists(`${this.PATH_STORAGE}/${path}`)) {
+      fs.mkdirSync(`${this.PATH_STORAGE}/${path}`, { recursive: true });
     }
 
     try {
       if (Array.isArray(files)) {
-        return await Promise.all(files.map((file) => this.putFile(file)));
+        return await Promise.all(files.map((file) => this.putFile(file, path)));
       } else {
-        return this.putFile(files);
+        return this.putFile(files, path);
       }
     } catch (error) {
       return undefined;
@@ -44,25 +36,21 @@ export class LocalFileUploader implements FileUploader {
     return fs.existsSync(path);
   };
 
-  private putFile = (file: Express.Multer.File) => {
+  private putFile = (file: Express.Multer.File, path: string) => {
     const timestamp = Date.now();
     const filename = this.generateFileKey(file, timestamp);
 
-    fs.writeFileSync(
-      `${process.cwd()}/public${this.PATH_STORAGE}/${filename}`,
-      file.buffer,
-    );
+    fs.writeFileSync(`${this.PATH_STORAGE}/${path}/${filename}`, file.buffer);
 
     return {
       mimetype: file.mimetype,
       filename,
       size: file.size,
-      url: this.retrieveURL(`${this.PATH_STORAGE}/${filename}`),
+      url: this.retrieveURL(`/${path}/${filename}`),
     } as UploadedFile;
   };
 
   private retrieveURL(set: string) {
-    console.log(set);
     const port = process.env.PORT || 3000;
     return `http://localhost:${port}/img${set}`;
   }

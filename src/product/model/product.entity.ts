@@ -1,8 +1,16 @@
 import { Item } from '../../item/model/item.entity';
 import { Category } from '../../category/model/category.entity';
 import { BaseEntity } from '../../common/model/base.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { Status } from 'src/status/model/status.entity';
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { Status } from '../../status/model/status.entity';
+import { Image } from '../../common/model/image.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -18,8 +26,13 @@ export class Product extends BaseEntity {
   @ManyToOne(() => Status)
   status: Status;
 
-  //@Column()
-  // images: string[];
+  @ManyToMany(() => Image)
+  @JoinTable({
+    name: 'product_images',
+    joinColumn: { name: 'productId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'imageId', referencedColumnName: 'id' },
+  })
+  images: Image[];
 
   @ManyToOne(() => Category, { eager: true })
   category: Category;
