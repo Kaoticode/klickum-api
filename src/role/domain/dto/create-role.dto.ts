@@ -13,10 +13,7 @@ export class CreateRoleDto {
 }
 
 export class Permission {
-  @IsEnum(Resource)
-  resource: Resource;
-
   @IsEnum(Action, { each: true })
   @ArrayUnique()
-  actions: Action[];
+  action: Action;
 }

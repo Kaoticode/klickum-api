@@ -1,53 +1,49 @@
-import { Module } from '@nestjs/common';
+import { Module, OnModuleInit } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { OrderModule } from './order/order.module';
-import { ProductModule } from './product/product.module';
-import { TicketModule } from './ticket/ticket.module';
-import { UserModule } from './user/user.module';
-import { RaffleModule } from './raffle/raffle.module';
-import { CategoryModule } from './category/category.module';
-import { User, UserSchema } from './user/schema/user.schema';
-import { Product, ProductSchema } from './product/schema/product.schema';
-import { Category, CategorySchema } from './category/schema/category.schema';
-import { Order, OrderSchema } from './order/schema/order.schema';
-import { CommonModule } from './common/common.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+//import { environmentValidate } from './common/domain/environment.validate';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { CategoryModule } from './category/category.module';
+import { CommonModule } from './common/common.module';
+import { ProductModule } from './product/product.module';
 import { RoleModule } from './role/role.module';
+import { ItemModule } from './item/item.module';
+import typeorm from './config/typeorm';
+import { OrderModule } from './order/order.module';
+import { StatusModule } from './status/status.module';
+import { PromotionModule } from './promotion/promotion.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, load: [typeorm] }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
-    MongooseModule.forRootAsync({
-      useFactory: async (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGODB_URI'),
-      }),
+    TypeOrmModule.forRootAsync({
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
       inject: [ConfigService],
     }),
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: Product.name, schema: ProductSchema },
-      { name: Category.name, schema: CategorySchema },
-      { name: Order.name, schema: OrderSchema },
-    ]),
-    AuthModule,
-    OrderModule,
-    ProductModule,
-    TicketModule,
     UserModule,
-    RaffleModule,
+    AuthModule,
     CategoryModule,
     CommonModule,
+    ProductModule,
     RoleModule,
+    ItemModule,
+    OrderModule,
+    StatusModule,
+    PromotionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(private readonly appService: AppService) {}
+  async onModuleInit() {}
+}

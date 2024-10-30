@@ -1,23 +1,19 @@
-import { Inject, Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
+import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from 'src/user/schema/user.schema';
 import { UserService } from 'src/user/user.service';
-import { HashService } from 'src/common/service/hash.service';
-import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { HashService } from 'src/common/services/hash.service';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { RoleService } from 'src/role/role.service';
-import { Role, RoleSchema } from 'src/role/schema/role.schema';
+import { JwtModule } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
+import { User } from 'src/user/model/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Permission, Role } from 'src/role/model/role.entity';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: User.name, schema: UserSchema },
-      { name: Role.name, schema: RoleSchema },
-    ]),
     JwtModule.registerAsync({
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
@@ -26,8 +22,8 @@ import { Role, RoleSchema } from 'src/role/schema/role.schema';
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([User, Role, Permission]),
   ],
-  controllers: [AuthController],
   providers: [
     AuthService,
     UserService,
@@ -36,5 +32,7 @@ import { Role, RoleSchema } from 'src/role/schema/role.schema';
     JwtStrategy,
     RoleService,
   ],
+  exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}

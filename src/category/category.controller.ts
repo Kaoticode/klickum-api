@@ -1,31 +1,42 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
+  ParseIntPipe,
   Post,
-  Request,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './domain/dto/createCategory.dto';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
-import { ApiBody, ApiTags } from '@nestjs/swagger';
+import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Action } from 'src/role/domain/action.enum';
 
 @ApiTags('category')
 @Controller('category')
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @ApiBody({ type: CreateCategoryDto })
   @Post()
+  @UseGuards(JwtAuthGuard, AuthorizationGuard)
+  @Permissions(Action.categoryCreate)
+  @ApiBody({ type: CreateCategoryDto })
   async create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoryService.create(createCategoryDto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(@Request() req) {
-    return this.categoryService.findAll();
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  async findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.categoryService.paginate({ page, limit });
   }
 }

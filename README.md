@@ -26,6 +26,15 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+## Datos requeridos en variables de entorno
+
+```
+SUPERADMIN_PASSWORD
+SUPERADMIN_EMAIL
+SUPERADMIN_USERNAME
+SUPERADMIN_PHONE
+```
+
 ## Installation
 
 ```bash
@@ -35,6 +44,12 @@ $ npm install
 ## Running the app
 
 ```bash
+#prepare the enrivoment
+
+$ npm run migration:sync
+$ npm run migration:run
+
+
 # development
 $ npm run start
 
