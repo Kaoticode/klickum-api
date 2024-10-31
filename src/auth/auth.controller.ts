@@ -12,7 +12,7 @@ import { AuthService } from './auth.service';
 import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
 import { LocalAuthGuard } from './guard/local.auth.guard';
 import { JwtAuthGuard } from './guard/jwt.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from './guard/authorization.guard';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Action } from 'src/role/domain/action.enum';
@@ -31,6 +31,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @HttpCode(HttpStatus.OK)
+  @ApiResponse({ status: 200, description: 'Login | password and username' })
   @Post('login')
   async login(@Request() req) {
     return this.authService.signIn(req.user);

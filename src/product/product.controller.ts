@@ -14,7 +14,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './domain/dto/createProduct.dto';
 import { UpdateProductDto } from './domain/dto/updateProduct.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -64,8 +64,24 @@ export class ProductController {
   }
 
   @Patch('upload/:id')
-  @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @Permissions(Action.productUpdate)
+  @UseGuards(JwtAuthGuard, AuthorizationGuard)
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    required: true,
+    schema: {
+      type: 'object',
+      properties: {
+        img: {
+          type: 'array',
+          items: {
+            type: 'string',
+            format: 'binary',
+          },
+        },
+      },
+    },
+  })
   @UseInterceptors(
     FileFieldsInterceptor([{ name: 'img', maxCount: 5 }], {
       fileFilter: CustomUploadFileValidation.fileFilter.bind(

@@ -19,7 +19,7 @@ import { OrderService } from './order.service';
 import { CreateItemDto } from '../item/domain/dto/createItem.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Action } from 'src/role/domain/action.enum';
 
@@ -32,6 +32,7 @@ export class OrderController {
   @Post()
   @Permissions(Action.orderCreate)
   @UseInterceptors(TransactionInterceptor)
+  @ApiBody({ type: [CreateItemDto] })
   async createOrder(
     @Body(new ParseArrayPipe({ items: CreateItemDto }))
     data: CreateItemDto[],

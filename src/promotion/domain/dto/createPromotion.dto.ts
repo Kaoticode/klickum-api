@@ -14,6 +14,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class CreatePromotionDto {
   @ApiProperty()
+  @ApiProperty()
   @Transform(({ value }): string => (value as string).trim())
   @IsString()
   @IsNotEmpty()
