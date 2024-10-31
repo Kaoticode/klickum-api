@@ -17,6 +17,8 @@ import typeorm from './config/typeorm';
 import { OrderModule } from './order/order.module';
 import { StatusModule } from './status/status.module';
 import { PromotionModule } from './promotion/promotion.module';
+import { RaffleModule } from './raffle/raffle.module';
+import { TicketModule } from './ticket/ticket.module';
 
 @Module({
   imports: [
@@ -39,6 +41,8 @@ import { PromotionModule } from './promotion/promotion.module';
     OrderModule,
     StatusModule,
     PromotionModule,
+    RaffleModule,
+    TicketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

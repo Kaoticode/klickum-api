@@ -6,6 +6,7 @@ import { BaseRepository } from '../common/services/baseRepository';
 import { DataSource } from 'typeorm';
 import { REQUEST } from '@nestjs/core';
 import { User } from './model/user.entity';
+import { UpdateUserDto } from './domain/dto/updateUser.dto';
 
 @Injectable({ scope: Scope.REQUEST })
 export class UserRepository extends BaseRepository {
@@ -21,5 +22,10 @@ export class UserRepository extends BaseRepository {
 
   getQueryBuilder() {
     return this.getRepository(User).createQueryBuilder('user');
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    await this.getRepository(User).update({ id }, updateUserDto);
+    return await this.getRepository(User).findOne({ where: { id } });
   }
 }

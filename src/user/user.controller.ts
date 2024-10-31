@@ -1,10 +1,12 @@
 import {
+  Body,
   Controller,
   DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
   ParseUUIDPipe,
+  Patch,
   Query,
   Request,
   UseGuards,
@@ -15,6 +17,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { UserTransaccionService } from './user.transaccion.service';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Action } from 'src/role/domain/action.enum';
+import { UpdateUserDto } from './domain/dto/updateUser.dto';
 
 @ApiTags('user')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -39,5 +42,13 @@ export class UserController {
   @Permissions(Action.usersRead)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.getUser(id);
+  }
+  @Patch(':id')
+  @Permissions(Action.usersUpdate)
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return this.userService.update(id, updateUserDto);
   }
 }

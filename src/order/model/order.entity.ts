@@ -12,7 +12,13 @@ export class Order extends BaseEntity {
   @ManyToOne(() => Status)
   status: Status;
 
-  @Column({ default: 0, nullable: true })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    nullable: true,
+  })
   totalPrice: number;
 
   @Column({ default: false, nullable: true })
