@@ -62,4 +62,17 @@ export class TicketService {
 
     return paginate<Ticket>(query, options);
   }
+
+  async findOneById(id: string) {
+    const query = this.ticketRepository.getQueryBuilder();
+
+    query
+      .innerJoinAndSelect('ticket.raffle', 'raffle')
+      .innerJoinAndSelect('raffle.rewards', 'reward')
+      .innerJoinAndSelect('reward.product', 'product')
+      .select(['ticket', 'raffle', 'reward', 'product.id', 'product.name'])
+      .where('ticket.id = :id', { id });
+
+    return query.getOne();
+  }
 }

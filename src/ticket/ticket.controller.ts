@@ -3,7 +3,9 @@ import {
   Controller,
   DefaultValuePipe,
   Get,
+  Param,
   ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   Query,
   Request,
@@ -67,5 +69,10 @@ export class TicketController {
       page,
       limit,
     });
+  }
+
+  @Get(':id')
+  async findOneById(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.ticketService.findOneById(id);
   }
 }
