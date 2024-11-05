@@ -6,7 +6,7 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { RoleService } from './role.service';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
@@ -23,6 +23,10 @@ export class RoleController {
   @Permissions(Action.roleRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({
+    status: 200,
+    description: 'roles: superadmin, admin and user',
+  })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,

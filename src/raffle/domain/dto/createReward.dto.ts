@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 import {
   IsInt,
   IsNotEmpty,
@@ -8,9 +7,8 @@ import {
   NotEquals,
 } from 'class-validator';
 
-export class CreateItemDto {
+export class CreateRewardDto {
   @ApiProperty()
-  @Transform(({ value }): string => (value as string).trim())
   @IsString()
   @IsNotEmpty()
   @IsUUID()
