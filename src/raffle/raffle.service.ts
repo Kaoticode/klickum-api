@@ -4,16 +4,25 @@ import { RaffleRepository } from './raffle.repository';
 import { RewardRepository } from './reward.repository';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Raffle } from './model/raffle.entity';
+import { StatusService } from 'src/status/status.service';
 
 @Injectable()
 export class RaffleService {
   constructor(
     private readonly raffleRepository: RaffleRepository,
     private readonly rewardRepository: RewardRepository,
+    private readonly statusService: StatusService,
   ) {}
 
   async create(createRaffleDto: CreateRaffleDto) {
-    const raffle = await this.raffleRepository.create(createRaffleDto);
+    const status = await this.statusService.findOne('available');
+
+    const raffle = await this.raffleRepository.create({
+      name: createRaffleDto.name,
+      price: createRaffleDto.price,
+      amount: createRaffleDto.amount,
+      status,
+    });
 
     await this.rewardRepository.createItems(raffle.id, createRaffleDto.rewards);
 
@@ -27,8 +36,25 @@ export class RaffleService {
 
     query
       .leftJoinAndSelect('raffle.rewards', 'reward')
+      .leftJoinAndSelect('raffle.status', 'status')
       .leftJoinAndSelect('reward.product', 'product')
-      .select(['raffle', 'reward', 'product.id', 'product.name'])
+      .where('raffle.isActive = :isActive', { isActive: true })
+      .select(['raffle', 'reward', 'product.id', 'product.name', 'status.name'])
+      .orderBy('raffle.created_at', 'DESC');
+
+    return paginate<Raffle>(query, options);
+  }
+
+  async adminpaginateAll(
+    options: IPaginationOptions,
+  ) /*: Promise<Pagination<Order>> */ {
+    const query = await this.raffleRepository.getRaffleQueryBuilder();
+
+    query
+      .leftJoinAndSelect('raffle.rewards', 'reward')
+      .leftJoinAndSelect('raffle.status', 'status')
+      .leftJoinAndSelect('reward.product', 'product')
+      .select(['raffle', 'reward', 'product.id', 'product.name', 'status.name'])
       .orderBy('raffle.created_at', 'DESC');
 
     return paginate<Raffle>(query, options);

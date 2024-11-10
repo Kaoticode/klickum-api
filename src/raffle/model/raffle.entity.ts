@@ -1,7 +1,8 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Reward } from './reward.entity';
 import { BaseEntity } from '../../common/model/base.entity';
 import { Ticket } from '../../ticket/model/ticket.entity';
+import { Status } from '../../status/model/status.entity';
 
 @Entity()
 export class Raffle extends BaseEntity {
@@ -13,6 +14,9 @@ export class Raffle extends BaseEntity {
 
   @Column()
   amount: number;
+
+  @ManyToOne(() => Status)
+  status: Status;
 
   @OneToMany((type) => Reward, (reward) => reward.raffle)
   rewards: Promise<Reward[]>;

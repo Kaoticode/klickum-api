@@ -36,7 +36,7 @@ export class $npmConfigName1729584365550 implements MigrationInterface {
       raffleDelete = 'raffle.delete',
       ticketCreate = 'ticket.create',
       ticketRead = 'ticket.read',
-      ticketAdminRead = 'ticket.read',
+      ticketAdminRead = 'ticketAdmin.read',
       ticketUpdate = 'ticket.update',
       ticketDelete = 'ticket.delete',
     }

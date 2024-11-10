@@ -8,11 +8,12 @@ import { JwtService } from '@nestjs/jwt';
 import { HashService } from 'src/common/services/hash.service';
 import { RoleSetup } from 'src/role/domain/role.enum';
 import { RoleService } from 'src/role/role.service';
-import { CreateUserAuthDto } from 'src/user/domain/dto/createUser.auth.dto';
 import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
+import { SignupUserDto } from 'src/user/domain/dto/signupUser.dto';
 import { User } from 'src/user/model/user.entity';
 import { UserService } from 'src/user/user.service';
-import { ObjectId } from 'typeorm';
+import { UserRepository } from '../user/user.repository';
+import { ChangePasswordDto } from '../user/domain/dto/changePassword.dto';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +22,7 @@ export class AuthService {
     private readonly configService: ConfigService,
     private readonly userService: UserService,
     private readonly hashService: HashService,
-    private readonly rolesService: RoleService,
+    private readonly rolesService: RoleService, //private readonly userRepository: UserRepository
   ) {}
 
   private async getBaseRole() {
@@ -33,8 +34,8 @@ export class AuthService {
     return role;
   }
 
-  async signUp(createUserDto: CreateUserDto) {
-    const { username, email } = createUserDto;
+  async signUp(signupUserDto: SignupUserDto) {
+    const { username, email } = signupUserDto;
 
     const userExists = await this.userService.findOneByUsername(username);
 
@@ -46,12 +47,12 @@ export class AuthService {
       throw new BadRequestException('User already exists');
     }
 
-    const { password } = createUserDto;
+    const { password } = signupUserDto;
 
     const hashedPassword = await this.hashService.hash(password);
 
     const user = await this.userService.create({
-      ...createUserDto,
+      ...signupUserDto,
       role,
       password: hashedPassword,
     });
@@ -62,7 +63,7 @@ export class AuthService {
   async validate(username: string, password: string) {
     const user = await this.userService.findOneByUsername(username);
 
-    if (!user) return null;
+    if (!user || !user.isActive) return null;
 
     const PASSWORD_VALIDATION = await this.hashService.compare(
       password,
@@ -82,12 +83,6 @@ export class AuthService {
   }
 
   async me(user_id: string) {
-    /*
-    if (!mongoose.isValidObjectId(user_id)) {
-      throw new BadRequestException('Invalid user id');
-    }
-      */
-
     const user = await this.userService.findOneById(user_id);
     if (!user) {
       throw new BadRequestException('User not found');
@@ -106,8 +101,8 @@ export class AuthService {
     return role.permissions;
   }
 
-  async createAuth(createUserAuthDto: CreateUserAuthDto) {
-    const { username, email } = createUserAuthDto;
+  async create(createUserDto: CreateUserDto) {
+    const { username, email } = createUserDto;
 
     const userExists = await this.userService.findOneByUsername(username);
 
@@ -117,20 +112,39 @@ export class AuthService {
       throw new BadRequestException('User already exists');
     }
 
-    const role = await this.rolesService.findOneById(createUserAuthDto.roleId);
+    const role = await this.rolesService.findOneById(createUserDto.roleId);
     if (!role) {
       throw new BadRequestException('Role not found');
     }
 
-    const { password } = createUserAuthDto;
+    const { password } = createUserDto;
 
     const hashedPassword = await this.hashService.hash(password);
 
     const user = await this.userService.create({
-      ...createUserAuthDto,
+      ...createUserDto,
       role,
       password: hashedPassword,
     });
     return this.signIn(user);
+  }
+
+  async changePassword(id: string, changePassword: ChangePasswordDto) {
+    const user = await this.userService.findOneById(id);
+
+    const { currentPassword, password } = changePassword;
+
+    if (!user) throw new BadRequestException();
+
+    const isValid = await this.hashService.compare(
+      currentPassword,
+      user.password,
+    );
+
+    if (!isValid) throw new BadRequestException('invalid');
+
+    const newhashed = await this.hashService.hash(password);
+
+    await this.userService.update(id, { password: newhashed });
   }
 }

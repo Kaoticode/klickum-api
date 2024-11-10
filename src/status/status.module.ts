@@ -4,6 +4,6 @@ import { StatusRepository } from './status.repository';
 
 @Module({
   providers: [StatusService, StatusRepository],
-  exports: [StatusService],
+  exports: [StatusService, StatusRepository],
 })
 export class StatusModule {}

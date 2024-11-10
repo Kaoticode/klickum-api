@@ -11,6 +11,7 @@ import { User } from 'src/user/model/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permission, Role } from 'src/role/model/role.entity';
 import { AuthController } from './auth.controller';
+import { UserRepository } from '../user/user.repository';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { AuthController } from './auth.controller';
     LocalStrategy,
     JwtStrategy,
     RoleService,
+    //UserRepository
   ],
   exports: [AuthService],
   controllers: [AuthController],

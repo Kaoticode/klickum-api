@@ -105,9 +105,22 @@ export class ProductService {
   async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
     const query = this.productRepository
       .createQueryBuilder('product')
+      .where('product.isActive = :isActive', { isActive: true })
       .leftJoinAndSelect('product.status', 'status')
       .leftJoinAndSelect('product.category', 'category')
-      .innerJoinAndSelect('product.images', 'image')
+      .leftJoinAndSelect('product.images', 'image')
+      .select(['product', 'status.name', 'category.name', 'image.url']);
+
+    return paginate<Product>(query, options);
+  }
+  async adminPaginate(
+    options: IPaginationOptions,
+  ): Promise<Pagination<Product>> {
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.status', 'status')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.images', 'image')
       .select(['product', 'status.name', 'category.name', 'image.url']);
 
     return paginate<Product>(query, options);

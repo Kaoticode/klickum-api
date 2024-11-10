@@ -22,8 +22,6 @@ import { CustomUploadFileValidation } from 'src/common/services/customUploadFile
 import { getFileValidator } from 'src/common/services/fileRequire.validation';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
-import { Permissions } from 'src/common/decorator/permissions.decorator';
-import { Action } from 'src/role/domain/action.enum';
 
 @ApiTags('product')
 @Controller('product')
@@ -32,24 +30,19 @@ export class ProductController {
 
   @Post()
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  @Permissions(Action.productCreate)
+  //@Permissions(Action.productCreate)
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  @Permissions(Action.productUpdate)
+  //@Permissions(Action.productUpdate)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
   ) {
     return this.productService.update(id, updateProductDto);
-  }
-
-  @Get(':id')
-  async findById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productService.findById(id);
   }
 
   @Get()
@@ -60,11 +53,22 @@ export class ProductController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
     limit = limit > 100 ? 100 : limit;
+    console.log(limit);
     return this.productService.paginate({ page, limit });
+  }
+  @Get('admin')
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  async adminFindAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.productService.adminPaginate({ page, limit });
   }
 
   @Patch('upload/:id')
-  @Permissions(Action.productUpdate)
+  //@Permissions(Action.productUpdate)
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
@@ -97,5 +101,10 @@ export class ProductController {
     },
   ) {
     await this.productService.uploadImg(id, files.img);
+  }
+
+  @Get(':id')
+  async findById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productService.findById(id);
   }
 }

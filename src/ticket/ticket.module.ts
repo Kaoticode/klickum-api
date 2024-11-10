@@ -8,6 +8,8 @@ import { RaffleService } from 'src/raffle/raffle.service';
 import { RaffleRepository } from 'src/raffle/raffle.repository';
 import { RewardRepository } from 'src/raffle/reward.repository';
 import { TicketRepository } from './ticket.repository';
+import { StatusService } from 'src/status/status.service';
+import { StatusRepository } from 'src/status/status.repository';
 
 @Module({
   imports: [UserModule, AuthModule, RaffleModule],
@@ -17,6 +19,8 @@ import { TicketRepository } from './ticket.repository';
     RaffleRepository,
     RewardRepository,
     TicketRepository,
+    StatusService,
+    StatusRepository,
   ],
   controllers: [TicketController],
 })

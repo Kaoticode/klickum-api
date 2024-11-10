@@ -1,22 +1,24 @@
-import { Controller } from '@nestjs/common';
 import {
   Body,
+  Controller,
   Get,
   HttpCode,
   HttpStatus,
+  Patch,
   Post,
   Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
+import { SignupUserDto } from 'src/user/domain/dto/signupUser.dto';
 import { LocalAuthGuard } from './guard/local.auth.guard';
 import { JwtAuthGuard } from './guard/jwt.guard';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from './guard/authorization.guard';
-import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { CreateUserDto } from '../user/domain/dto/createUser.dto';
+import { ChangePasswordDto } from '../user/domain/dto/changePassword.dto';
 import { Action } from 'src/role/domain/action.enum';
-import { CreateUserAuthDto } from 'src/user/domain/dto/createUser.auth.dto';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,8 +27,8 @@ export class AuthController {
 
   @HttpCode(HttpStatus.OK)
   @Post('signup')
-  signUp(@Body() createUserDto: CreateUserDto) {
-    return this.authService.signUp(createUserDto);
+  signUp(@Body() signupUserDto: SignupUserDto) {
+    return this.authService.signUp(signupUserDto);
   }
 
   @UseGuards(LocalAuthGuard)
@@ -44,9 +46,16 @@ export class AuthController {
     return await this.authService.me(req.user.sub);
   }
 
+  @Patch('me/password')
+  @UseGuards(JwtAuthGuard, AuthorizationGuard)
+  //@Permissions(Action.usersUpdate)
+  async update(@Request() req, @Body() changePassword: ChangePasswordDto) {
+    await this.authService.changePassword(req.user.sub, changePassword);
+  }
+
   @HttpCode(HttpStatus.OK)
-  @Post('register')
-  async createAuth(@Body() createUserAuthDto: CreateUserAuthDto) {
-    return await this.authService.createAuth(createUserAuthDto);
+  @Post('create')
+  async createAuth(@Body() createUserdto: CreateUserDto) {
+    return await this.authService.create(createUserdto);
   }
 }

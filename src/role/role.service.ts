@@ -1,15 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { In, Repository } from 'typeorm';
-import { Permission, Role } from './model/role.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { CreateRoleDto } from './domain/dto/create-role.dto';
-import { ObjectId } from 'mongodb';
-import { Action } from './domain/action.enum';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { Repository } from "typeorm";
+import { Permission, Role } from "./model/role.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { CreateRoleDto } from "./domain/dto/create-role.dto";
+import { Action } from "./domain/action.enum";
+import { IPaginationOptions, paginate, Pagination } from "nestjs-typeorm-paginate";
 
 @Injectable()
 export class RoleService {
@@ -17,8 +12,10 @@ export class RoleService {
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
     @InjectRepository(Permission)
-    private readonly permissionRepository: Repository<Permission>,
-  ) {}
+    private readonly permissionRepository: Repository<Permission>
+  ) {
+  }
+
   async create(createRoleDto: CreateRoleDto) {
     return await this.roleRepository.save(createRoleDto);
   }
@@ -27,16 +24,23 @@ export class RoleService {
     return await this.permissionRepository.save({ action });
   }
 
-  async findOne(name: Role['name']) {
+  async findOne(name: Role["name"]) {
     return await this.roleRepository.findOne({ where: { name } });
   }
+
   async findOneById(id: number) {
-    return await this.roleRepository.findOne({ where: { id } });
+    const role = await this.roleRepository.findOne({ where: { id } });
+
+    if (!role) {
+      throw new BadRequestException("Role not found");
+    }
+
+    return role;
   }
 
   async findOnePermission(action: Action) {
     return await this.permissionRepository.findOne({
-      where: { action },
+      where: { action }
     });
   }
 
