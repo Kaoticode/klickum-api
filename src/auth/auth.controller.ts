@@ -40,7 +40,6 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  @Permissions(Action.authRead)
   @Get('me')
   async getme(@Request() req) {
     return await this.authService.me(req.user.sub);
@@ -48,12 +47,12 @@ export class AuthController {
 
   @Patch('me/password')
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  //@Permissions(Action.usersUpdate)
   async update(@Request() req, @Body() changePassword: ChangePasswordDto) {
     await this.authService.changePassword(req.user.sub, changePassword);
   }
 
   @HttpCode(HttpStatus.OK)
+  @Permissions(Action.usersCreate)
   @Post('create')
   async createAuth(@Body() createUserdto: CreateUserDto) {
     return await this.authService.create(createUserdto);

@@ -1,5 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateRaffleDto } from './domain/dto/createRaffle.dto';
+import {
+  CreateRaffleDto,
+  UpdateRaffleDto,
+} from './domain/dto/createRaffle.dto';
 import { RaffleRepository } from './raffle.repository';
 import { RewardRepository } from './reward.repository';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
@@ -66,5 +69,11 @@ export class RaffleService {
     if (!raffle) throw new BadRequestException('Raffle not found');
 
     return raffle;
+  }
+
+  async update(id: string, updateRaffleDto: UpdateRaffleDto) {
+    const raffle = await this.findOnebyId(id);
+
+    await this.raffleRepository.update(id, updateRaffleDto);
   }
 }

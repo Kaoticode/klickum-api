@@ -16,6 +16,8 @@ import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { UserTransaccionService } from './user.transaccion.service';
 import { UpdateCreateDUserDto } from './domain/dto/updateUser.dto';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Action } from 'src/role/domain/action.enum';
 
 @ApiTags('user')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -24,7 +26,7 @@ export class UserController {
   constructor(private readonly userService: UserTransaccionService) {}
 
   @Get()
-  //@Permissions(Action.usersRead)
+  @Permissions(Action.usersRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async paginateAll(
@@ -37,13 +39,13 @@ export class UserController {
   }
 
   @Get(':id')
-  //@Permissions(Action.usersRead)
+  @Permissions(Action.usersRead)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.getUser(id);
   }
 
   @Patch(':id')
-  //@Permissions(Action.usersUpdate)
+  @Permissions(Action.usersUpdate)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateCreatedUserDto: UpdateCreateDUserDto,

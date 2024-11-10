@@ -33,4 +33,8 @@ export class RaffleRepository extends BaseRepository {
       relations: ['rewards', 'tickets'],
     });
   }
+
+  async update(id: string, updateRaffleDto: Partial<Raffle>) {
+    await this.getRepository(Raffle).update({ id }, updateRaffleDto);
+  }
 }

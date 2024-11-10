@@ -22,6 +22,8 @@ import { CustomUploadFileValidation } from 'src/common/services/customUploadFile
 import { getFileValidator } from 'src/common/services/fileRequire.validation';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
+import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Action } from 'src/role/domain/action.enum';
 
 @ApiTags('product')
 @Controller('product')
@@ -30,14 +32,14 @@ export class ProductController {
 
   @Post()
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  //@Permissions(Action.productCreate)
+  @Permissions(Action.productCreate)
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
-  //@Permissions(Action.productUpdate)
+  @Permissions(Action.productUpdate)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -57,6 +59,7 @@ export class ProductController {
     return this.productService.paginate({ page, limit });
   }
   @Get('admin')
+  @Permissions(Action.productRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async adminFindAll(
@@ -68,7 +71,7 @@ export class ProductController {
   }
 
   @Patch('upload/:id')
-  //@Permissions(Action.productUpdate)
+  @Permissions(Action.productUpdate)
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @ApiConsumes('multipart/form-data')
   @ApiBody({
