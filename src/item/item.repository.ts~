@@ -20,7 +20,7 @@ export class ItemsRepository extends BaseRepository {
       data.map(async (e) => {
         const product = await this.findOneProduct(e.productId);
 
-        if (!product.isActive || product.status.name !== StatusEnum.available.valueOf()) {
+        if (!product.isActive || product.status.name === StatusEnum.discontinued.valueOf()) {
           throw new BadRequestException("product not avaible");
         }
 
