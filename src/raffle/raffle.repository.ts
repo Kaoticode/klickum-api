@@ -12,11 +12,12 @@ export class RaffleRepository extends BaseRepository {
     super(dataSource, req);
   }
 
-  async create(createRaffleDto: CreateRaffleDto) {
+  async create(createRaffleDto: Partial<Raffle>) {
     const raffle = this.getRepository(Raffle).create({
       name: createRaffleDto.name,
       price: createRaffleDto.price,
       amount: createRaffleDto.amount,
+      status: createRaffleDto.status,
     });
 
     return await this.getRepository(Raffle).save(raffle);
@@ -31,5 +32,9 @@ export class RaffleRepository extends BaseRepository {
       where: { id },
       relations: ['rewards', 'tickets'],
     });
+  }
+
+  async update(id: string, updateRaffleDto: Partial<Raffle>) {
+    await this.getRepository(Raffle).update({ id }, updateRaffleDto);
   }
 }

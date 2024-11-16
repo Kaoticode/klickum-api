@@ -15,9 +15,9 @@ import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { UserTransaccionService } from './user.transaccion.service';
+import { UpdateCreateDUserDto } from './domain/dto/updateUser.dto';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Action } from 'src/role/domain/action.enum';
-import { UpdateUserDto } from './domain/dto/updateUser.dto';
 
 @ApiTags('user')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -43,12 +43,16 @@ export class UserController {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.userService.getUser(id);
   }
+
   @Patch(':id')
   @Permissions(Action.usersUpdate)
   async update(
     @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body() updateCreatedUserDto: UpdateCreateDUserDto,
   ) {
-    return this.userService.update(id, updateUserDto);
+    if (updateCreatedUserDto) {
+      return this.userService.update(id, updateCreatedUserDto);
+    }
+    return;
   }
 }

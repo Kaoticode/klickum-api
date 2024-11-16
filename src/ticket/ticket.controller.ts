@@ -28,7 +28,6 @@ export class TicketController {
   constructor(private ticketService: TicketService) {}
 
   @Post()
-  @Permissions(Action.ticketCreate)
   @UseInterceptors(TransactionInterceptor)
   async create(
     @Request() req,
@@ -39,7 +38,6 @@ export class TicketController {
   }
 
   @Get('history')
-  @Permissions(Action.ticketRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getUserTickets(
@@ -54,8 +52,9 @@ export class TicketController {
       limit,
     });
   }
-  @Get()
-  @Permissions(Action.ticketAdminRead)
+
+  @Get('admin')
+  @Permissions(Action.ticketRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getAllTickets(

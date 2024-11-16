@@ -47,11 +47,6 @@ export class ProductController {
     return this.productService.update(id, updateProductDto);
   }
 
-  @Get(':id')
-  async findById(@Param('id', ParseUUIDPipe) id: string) {
-    return this.productService.findById(id);
-  }
-
   @Get()
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
@@ -60,7 +55,19 @@ export class ProductController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
     limit = limit > 100 ? 100 : limit;
+    console.log(limit);
     return this.productService.paginate({ page, limit });
+  }
+  @Get('admin')
+  @Permissions(Action.productRead)
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  async adminFindAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.productService.adminPaginate({ page, limit });
   }
 
   @Patch('upload/:id')
@@ -97,5 +104,10 @@ export class ProductController {
     },
   ) {
     await this.productService.uploadImg(id, files.img);
+  }
+
+  @Get(':id')
+  async findById(@Param('id', ParseUUIDPipe) id: string) {
+    return this.productService.findById(id);
   }
 }

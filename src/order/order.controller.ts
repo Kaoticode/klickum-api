@@ -8,6 +8,7 @@ import {
   ParseArrayPipe,
   ParseIntPipe,
   ParseUUIDPipe,
+  Patch,
   Post,
   Query,
   Request,
@@ -20,6 +21,7 @@ import { CreateItemDto } from '../item/domain/dto/createItem.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
 import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ProcessOrderDto } from './domain/dto/processOrder.dto';
 import { Permissions } from 'src/common/decorator/permissions.decorator';
 import { Action } from 'src/role/domain/action.enum';
 
@@ -45,7 +47,6 @@ export class OrderController {
   }
 
   @Get('history')
-  @Permissions(Action.orderRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getUserOrders(
@@ -59,8 +60,9 @@ export class OrderController {
       limit,
     });
   }
+
   @Get()
-  @Permissions(Action.orderAdminRead)
+  @Permissions(Action.orderRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getAllOrders(
@@ -69,15 +71,31 @@ export class OrderController {
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
   ) {
     limit = limit > 100 ? 100 : limit;
+
     return await this.orderService.paginateAllOrders({
       page,
       limit,
     });
   }
 
-  @Permissions(Action.orderRead)
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.orderService.findOne(id);
+  }
+
+  @Post('process')
+  async processOrder(@Body() processOrderDto: ProcessOrderDto) {
+    return this.orderService.processOrder(processOrderDto);
+  }
+
+  @Patch('admin/cancell/:id')
+  @Permissions(Action.adminOrder)
+  async cancell(@Param('id', ParseUUIDPipe) id: string) {
+    return this.orderService.cancellOrder(id);
+  }
+
+  @Patch('cancell/:id')
+  async admincancell(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
+    return this.orderService.cancellUserOrder(id, req.user.sub);
   }
 }

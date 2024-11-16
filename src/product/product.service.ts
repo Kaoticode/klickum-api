@@ -1,20 +1,16 @@
-import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { FileUpload } from 'src/common/domain/interfaces/fileUpload.interface';
-import { CreateProductDto } from './domain/dto/createProduct.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from './model/product.entity';
-import { Repository } from 'typeorm';
-import { CategoryService } from 'src/category/category.service';
-import { UpdateProductDto } from './domain/dto/updateProduct.dto';
-import { ObjectId } from 'mongodb';
-import {
-  IPaginationOptions,
-  paginate,
-  Pagination,
-} from 'nestjs-typeorm-paginate';
-import { StatusService } from 'src/status/status.service';
-import { Image } from 'src/common/model/image.entity';
-import { ImageRepository } from '../common/services/imageRepository';
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { FileUpload } from "src/common/domain/interfaces/fileUpload.interface";
+import { CreateProductDto } from "./domain/dto/createProduct.dto";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Product } from "./model/product.entity";
+import { Repository } from "typeorm";
+import { CategoryService } from "src/category/category.service";
+import { UpdateProductDto } from "./domain/dto/updateProduct.dto";
+import { IPaginationOptions, paginate, Pagination } from "nestjs-typeorm-paginate";
+import { StatusService } from "src/status/status.service";
+import { ImageRepository } from "../common/services/imageRepository";
+import { StatusEnum } from "../status/domain/status.enum";
+import { ProductRepository } from "./product.repository";
 
 @Injectable()
 export class ProductService {
@@ -22,52 +18,54 @@ export class ProductService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
     private readonly categoryService: CategoryService,
-    @Inject('FileUpload')
+    @Inject("FileUpload")
     private readonly fileUpload: FileUpload,
     private readonly statusService: StatusService,
     private readonly imageRepository: ImageRepository,
-  ) {}
+    private readonly productRepo: ProductRepository
+  ) {
+  }
 
   async create(createProductDto: CreateProductDto) {
     const category_name = createProductDto.category;
 
-    const status = await this.statusService.findOne('available');
+    const status = await this.statusService.findOne("available");
 
     const exist = await this.productRepository.findOne({
-      where: { name: createProductDto.name },
+      where: { name: createProductDto.name }
     });
-    if (exist) throw new BadRequestException('Product already exists');
+    if (exist) throw new BadRequestException("Product already exists");
 
     const category = await this.categoryService.findOrCreate(category_name);
 
     return await this.productRepository.save({
       ...createProductDto,
       category,
-      status,
+      status
     });
   }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
     if (updateProductDto) {
       const product = await this.productRepository.findOne({
-        where: { id },
+        where: { id }
       });
 
       const { category, ...rest } = updateProductDto;
 
-      if (!product) throw new BadRequestException('Product not found');
+      if (!product) throw new BadRequestException("Product not found");
 
       const update = await this.productRepository.update({ id }, rest);
 
       if (category) {
         const change_category = await this.categoryService.findOrCreate(
-          category,
+          category
         );
         return await this.productRepository.update(
           { id },
           {
-            category: change_category,
-          },
+            category: change_category
+          }
         );
       }
 
@@ -78,24 +76,25 @@ export class ProductService {
   async findById(id: string) {
     const product = await this.productRepository.findOne({
       where: { id },
+      relations: { status: true }
     });
-    if (!product) throw new BadRequestException('Product not found');
+    if (!product) throw new BadRequestException("Product not found");
     return product;
   }
 
   async uploadImg(id: string, files: Express.Multer.File[]) {
     const product = await this.productRepository.findOne({
-      where: { id },
+      where: { id }
     });
 
-    if (!product) throw new BadRequestException('Product not found');
+    if (!product) throw new BadRequestException("Product not found");
 
-    const uploads = await this.fileUpload.upload(files, { path: 'products' });
+    const uploads = await this.fileUpload.upload(files, { path: "products" });
 
     const images = await Promise.all(
       uploads.map((upload) => {
         return this.imageRepository.create(upload);
-      }),
+      })
     );
 
     product.images = images;
@@ -104,12 +103,38 @@ export class ProductService {
 
   async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
     const query = this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.status', 'status')
-      .leftJoinAndSelect('product.category', 'category')
-      .innerJoinAndSelect('product.images', 'image')
-      .select(['product', 'status.name', 'category.name', 'image.url']);
+      .createQueryBuilder("product")
+      .where("product.isActive = :isActive", { isActive: true })
+      .leftJoinAndSelect("product.status", "status")
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.images", "image")
+      .select(["product", "status.name", "category.name", "image.url"]);
 
     return paginate<Product>(query, options);
   }
+
+  async adminPaginate(
+    options: IPaginationOptions
+  ): Promise<Pagination<Product>> {
+    const query = this.productRepository
+      .createQueryBuilder("product")
+      .leftJoinAndSelect("product.status", "status")
+      .leftJoinAndSelect("product.category", "category")
+      .leftJoinAndSelect("product.images", "image")
+      .select(["product", "status.name", "category.name", "image.url"]);
+
+    return paginate<Product>(query, options);
+  }
+
+  public async cancell(productId: string) {
+    const product = await this.findById(productId);
+
+    if (product.status.name !== StatusEnum.available.valueOf()) {
+      throw new BadRequestException("Product already cancelled");
+    }
+    const data = await this.statusService.productCancellation("discontinued");
+    await this.productRepo.update(productId, data);
+
+  }
+
 }

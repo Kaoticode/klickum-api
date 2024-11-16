@@ -13,6 +13,7 @@ import {
 } from 'class-validator';
 import { CreateRewardDto } from './createReward.dto';
 import { ApiProperty } from '@nestjs/swagger';
+import { PartialType, PickType } from '@nestjs/mapped-types';
 
 export class CreateRaffleDto {
   @ApiProperty()
@@ -41,3 +42,11 @@ export class CreateRaffleDto {
   @Type(() => CreateRewardDto)
   rewards: CreateRewardDto[];
 }
+
+class BaseRaffleDto extends PickType(CreateRaffleDto, [
+  'name',
+  'price',
+  'amount',
+]) {}
+
+export class UpdateRaffleDto extends PartialType(BaseRaffleDto) {}

@@ -22,7 +22,6 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
-  @MaxLength(15)
   password: string;
 
   @ApiProperty()
@@ -33,8 +32,11 @@ export class CreateUserDto {
 
   @ApiProperty()
   @Transform(({ value }): string => (value as string).trim())
-  @IsString()
   @IsNotEmpty()
   @IsString()
   phone: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  roleId: number;
 }
