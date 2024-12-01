@@ -11,10 +11,10 @@ import {
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './domain/dto/createCategory.dto';
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
-import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
-import { Permissions } from 'src/common/decorator/permissions.decorator';
-import { Action } from 'src/role/domain/action.enum';
+import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { AuthorizationGuard } from '../auth/guard/authorization.guard';
+import { Permissions } from '../common/decorator/permissions.decorator';
+import { Action } from '../role/domain/action.enum';
 
 @ApiTags('category')
 @Controller('category')

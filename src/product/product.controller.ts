@@ -18,12 +18,12 @@ import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { CreateProductDto } from './domain/dto/createProduct.dto';
 import { UpdateProductDto } from './domain/dto/updateProduct.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { CustomUploadFileValidation } from 'src/common/services/customUploadFileValidation';
-import { getFileValidator } from 'src/common/services/fileRequire.validation';
-import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
-import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
-import { Permissions } from 'src/common/decorator/permissions.decorator';
-import { Action } from 'src/role/domain/action.enum';
+import { CustomUploadFileValidation } from '../common/services/customUploadFileValidation';
+import { getFileValidator } from '../common/services/fileRequire.validation';
+import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { AuthorizationGuard } from '../auth/guard/authorization.guard';
+import { Permissions } from '../common/decorator/permissions.decorator';
+import { Action } from '../role/domain/action.enum';
 
 @ApiTags('product')
 @Controller('product')

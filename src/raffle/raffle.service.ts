@@ -7,7 +7,7 @@ import { RaffleRepository } from './raffle.repository';
 import { RewardRepository } from './reward.repository';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Raffle } from './model/raffle.entity';
-import { StatusService } from 'src/status/status.service';
+import { StatusService } from '../status/status.service';
 
 @Injectable()
 export class RaffleService {

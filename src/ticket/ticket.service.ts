@@ -1,8 +1,8 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateTicketDto } from './domain/dto/createTicket.dto';
-import { UserTransaccionService } from 'src/user/user.transaccion.service';
-import { RaffleService } from 'src/raffle/raffle.service';
-import { numricGenerator } from 'src/common/domain/numericGenerator';
+import { UserTransaccionService } from '../user/user.transaccion.service';
+import { RaffleService } from '../raffle/raffle.service';
+import { numricGenerator } from '../common/domain/numericGenerator';
 import { TicketRepository } from './ticket.repository';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Ticket } from './model/ticket.entity';
