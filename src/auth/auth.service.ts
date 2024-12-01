@@ -5,14 +5,13 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { HashService } from 'src/common/services/hash.service';
-import { RoleSetup } from 'src/role/domain/role.enum';
-import { RoleService } from 'src/role/role.service';
-import { CreateUserDto } from 'src/user/domain/dto/createUser.dto';
-import { SignupUserDto } from 'src/user/domain/dto/signupUser.dto';
-import { User } from 'src/user/model/user.entity';
-import { UserService } from 'src/user/user.service';
-import { UserRepository } from '../user/user.repository';
+import { HashService } from '../common/services/hash.service';
+import { RoleSetup } from '../role/domain/role.enum';
+import { RoleService } from '../role/role.service';
+import { CreateUserDto } from '../user/domain/dto/createUser.dto';
+import { SignupUserDto } from '../user/domain/dto/signupUser.dto';
+import { User } from '../user/model/user.entity';
+import { UserService } from '../user/user.service';
 import { ChangePasswordDto } from '../user/domain/dto/changePassword.dto';
 
 @Injectable()

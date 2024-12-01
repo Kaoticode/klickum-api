@@ -6,9 +6,8 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AuthService } from 'src/auth/auth.service';
-import { PERMISSIONS_KEY } from 'src/common/decorator/permissions.decorator';
-import { Permission } from 'src/role/domain/dto/create-role.dto';
+import { AuthService } from '../../auth/auth.service';
+import { PERMISSIONS_KEY } from '../../common/decorator/permissions.decorator';
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {

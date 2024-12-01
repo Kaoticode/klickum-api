@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UserService } from 'src/user/user.service';
-import { HashService } from 'src/common/services/hash.service';
+import { UserService } from '../user/user.service';
+import { HashService } from '../common/services/hash.service';
 import { LocalStrategy } from './strategy/local.strategy';
 import { JwtStrategy } from './strategy/jwt.strategy';
-import { RoleService } from 'src/role/role.service';
+import { RoleService } from '../role/role.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { User } from 'src/user/model/user.entity';
+import { User } from '../user/model/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Permission, Role } from 'src/role/model/role.entity';
+import { Permission, Role } from '../role/model/role.entity';
 import { AuthController } from './auth.controller';
-import { UserRepository } from '../user/user.repository';
 
 @Module({
   imports: [

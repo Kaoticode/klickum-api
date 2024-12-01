@@ -10,15 +10,15 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignupUserDto } from 'src/user/domain/dto/signupUser.dto';
+import { SignupUserDto } from '../user/domain/dto/signupUser.dto';
 import { LocalAuthGuard } from './guard/local.auth.guard';
 import { JwtAuthGuard } from './guard/jwt.guard';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from './guard/authorization.guard';
 import { CreateUserDto } from '../user/domain/dto/createUser.dto';
 import { ChangePasswordDto } from '../user/domain/dto/changePassword.dto';
-import { Action } from 'src/role/domain/action.enum';
-import { Permissions } from 'src/common/decorator/permissions.decorator';
+import { Action } from '../role/domain/action.enum';
+import { Permissions } from '../common/decorator/permissions.decorator';
 
 @ApiTags('auth')
 @Controller('auth')

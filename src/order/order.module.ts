@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
-import { ItemModule } from 'src/item/item.module';
+import { ItemModule } from '../item/item.module';
 import { OrderRepository } from './order.repository';
-import { UserModule } from 'src/user/user.module';
-import { AuthModule } from 'src/auth/auth.module';
-import { StatusModule } from 'src/status/status.module';
+import { UserModule } from '../user/user.module';
+import { AuthModule } from '../auth/auth.module';
+import { StatusModule } from '../status/status.module';
 import { ConfigService } from '@nestjs/config';
 /*
 import { TypeOrmModule } from '@nestjs/typeorm';

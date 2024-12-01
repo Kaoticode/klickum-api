@@ -15,11 +15,11 @@ import {
 import { ApiQuery, ApiTags } from '@nestjs/swagger';
 import { TicketService } from './ticket.service';
 import { CreateTicketDto } from './domain/dto/createTicket.dto';
-import { TransactionInterceptor } from 'src/common/services/transaction.interceptor';
-import { JwtAuthGuard } from 'src/auth/guard/jwt.guard';
-import { AuthorizationGuard } from 'src/auth/guard/authorization.guard';
-import { Permissions } from 'src/common/decorator/permissions.decorator';
-import { Action } from 'src/role/domain/action.enum';
+import { TransactionInterceptor } from '../common/services/transaction.interceptor';
+import { JwtAuthGuard } from '../auth/guard/jwt.guard';
+import { AuthorizationGuard } from '../auth/guard/authorization.guard';
+import { Permissions } from '../common/decorator/permissions.decorator';
+import { Action } from '../role/domain/action.enum';
 
 @ApiTags('ticket')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)

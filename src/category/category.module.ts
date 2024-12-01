@@ -3,7 +3,7 @@ import { CategoryService } from './category.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Category } from './model/category.entity';
 import { CategoryController } from './category.controller';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Category]), AuthModule],

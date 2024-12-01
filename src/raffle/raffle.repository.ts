@@ -3,7 +3,6 @@ import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
 import { BaseRepository } from '../common/services/baseRepository';
 import { DataSource } from 'typeorm';
-import { CreateRaffleDto } from './domain/dto/createRaffle.dto';
 import { Raffle } from './model/raffle.entity';
 
 @Injectable({ scope: Scope.REQUEST })
