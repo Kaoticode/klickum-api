@@ -1,6 +1,5 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { Transform, Type } from 'class-transformer';
-import { IsNotEmpty, IsString, IsUUID, ValidateNested } from 'class-validator';
+import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty, IsNumber, IsString, IsUUID } from "class-validator";
 
 export class CreateTicketDto {
   @ApiProperty()
@@ -8,4 +7,9 @@ export class CreateTicketDto {
   @IsNotEmpty()
   @IsUUID()
   raffleId: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  code: number;
 }
