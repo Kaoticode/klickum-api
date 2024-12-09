@@ -1,39 +1,44 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { CreateTicketDto } from './domain/dto/createTicket.dto';
-import { UserTransaccionService } from '../user/user.transaccion.service';
-import { RaffleService } from '../raffle/raffle.service';
-import { numricGenerator } from '../common/domain/numericGenerator';
-import { TicketRepository } from './ticket.repository';
-import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
-import { Ticket } from './model/ticket.entity';
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { CreateTicketDto } from "./domain/dto/createTicket.dto";
+import { UserTransaccionService } from "../user/user.transaccion.service";
+import { RaffleService } from "../raffle/raffle.service";
+import { numricGenerator } from "../common/domain/numericGenerator";
+import { TicketRepository } from "./ticket.repository";
+import { IPaginationOptions, paginate } from "nestjs-typeorm-paginate";
+import { Ticket } from "./model/ticket.entity";
 
 @Injectable()
 export class TicketService {
   constructor(
     private readonly userservice: UserTransaccionService,
     private readonly raffleService: RaffleService,
-    private readonly ticketRepository: TicketRepository,
-  ) {}
+    private readonly ticketRepository: TicketRepository
+  ) {
+  }
 
   async create(userId: string, createTicketDto: CreateTicketDto) {
-    const { raffleId } = createTicketDto;
+    const { raffleId, code } = createTicketDto;
     const user = await this.userservice.getUser(userId);
 
     const raffle = await this.raffleService.findOnebyId(raffleId);
 
     if ((await raffle.tickets).length === raffle.amount) {
-      throw new BadRequestException('Raffle is full');
+      throw new BadRequestException("Raffle is full");
     }
 
-    if (await this.ticketRepository.existUserOnticket(userId, raffleId)) {
-      throw new BadRequestException('User already has a ticket');
+    if (code > raffle.amount && code !== raffle.amount) {
+      throw new BadRequestException("invalid code");
     }
 
-    const code = this.getCode();
+    if (await this.ticketRepository.codeReserved(code, raffleId)) {
+      throw new BadRequestException("The code is alredy reserved");
+    }
+
+
     return this.ticketRepository.create({
       code,
       userId: user.id,
-      raffleId: raffle.id,
+      raffleId: raffle.id
     });
   }
 
@@ -47,18 +52,19 @@ export class TicketService {
     const query = this.ticketRepository.getQueryBuilder();
 
     query
-      .innerJoinAndSelect('ticket.raffle', 'raffle')
-      .where('ticket.userId = :userId', { userId })
-      .orderBy('ticket.created_at', 'DESC');
+      .innerJoinAndSelect("ticket.raffle", "raffle")
+      .where("ticket.userId = :userId", { userId })
+      .orderBy("ticket.created_at", "DESC");
 
     return paginate<Ticket>(query, options);
   }
+
   async paginateAllTickets(options: IPaginationOptions) {
     const query = this.ticketRepository.getQueryBuilder();
 
     query
-      .innerJoinAndSelect('ticket.raffle', 'raffle')
-      .orderBy('ticket.created_at', 'DESC');
+      .innerJoinAndSelect("ticket.raffle", "raffle")
+      .orderBy("ticket.created_at", "DESC");
 
     return paginate<Ticket>(query, options);
   }
@@ -67,11 +73,11 @@ export class TicketService {
     const query = this.ticketRepository.getQueryBuilder();
 
     query
-      .innerJoinAndSelect('ticket.raffle', 'raffle')
-      .innerJoinAndSelect('raffle.rewards', 'reward')
-      .innerJoinAndSelect('reward.product', 'product')
-      .select(['ticket', 'raffle', 'reward', 'product.id', 'product.name'])
-      .where('ticket.id = :id', { id });
+      .innerJoinAndSelect("ticket.raffle", "raffle")
+      .innerJoinAndSelect("raffle.rewards", "reward")
+      .innerJoinAndSelect("reward.product", "product")
+      .select(["ticket", "raffle", "reward", "product.id", "product.name"])
+      .where("ticket.id = :id", { id });
 
     return query.getOne();
   }

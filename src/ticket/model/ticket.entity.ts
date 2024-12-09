@@ -1,13 +1,12 @@
-import { User } from '../../user/model/user.entity';
-import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { BaseEntity } from '../../common/model/base.entity';
-import { Item } from '../../item/model/item.entity';
-import { Raffle } from '../../raffle/model/raffle.entity';
+import { User } from "../../user/model/user.entity";
+import { Column, Entity, ManyToOne } from "typeorm";
+import { BaseEntity } from "../../common/model/base.entity";
+import { Raffle } from "../../raffle/model/raffle.entity";
 
 @Entity()
 export class Ticket extends BaseEntity {
   @Column()
-  code: string;
+  code: number;
 
   @ManyToOne(() => User)
   user: User;
