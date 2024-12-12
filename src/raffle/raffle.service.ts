@@ -5,6 +5,8 @@ import { RewardRepository } from "./reward.repository";
 import { IPaginationOptions, paginate } from "nestjs-typeorm-paginate";
 import { Raffle } from "./model/raffle.entity";
 import { StatusService } from "../status/status.service";
+import { UpdateRaffleStatusDto } from "./domain/dto/updateRaffleStatus.dto";
+import { StatusType } from "../status/domain/status.enum";
 
 @Injectable()
 export class RaffleService {
@@ -40,6 +42,7 @@ export class RaffleService {
       .leftJoinAndSelect("raffle.status", "status")
       .leftJoinAndSelect("reward.product", "product")
       .where("raffle.isActive = :isActive", { isActive: true })
+      .andWhere("status.name <> :status", { status: "cancelled" })
       .select(["raffle", "reward", "product.id", "product.name", "status.name"])
       .orderBy("raffle.created_at", "DESC");
 
@@ -74,4 +77,14 @@ export class RaffleService {
 
     await this.raffleRepository.update(id, updateRaffleDto);
   }
+
+  async updateStatus(id: string, updateRaffleStatusDto: UpdateRaffleStatusDto) {
+    const raffle = await this.findOnebyId(id);
+
+    if (raffle.status.name === "completed") throw new BadRequestException("Raffle already completed");
+    const status = await this.statusService.findOne(updateRaffleStatusDto.status as StatusType);
+
+    await this.raffleRepository.update(id, { status });
+  }
+
 }

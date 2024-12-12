@@ -849,6 +849,39 @@
         ]
       }
     },
+    "/raffle/status/{id}": {
+      "patch": {
+        "operationId": "RaffleController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRaffleStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "raffle"
+        ]
+      }
+    },
     "/ticket": {
       "post": {
         "operationId": "TicketController_create",
@@ -1165,6 +1198,17 @@
       "UpdateRaffleDto": {
         "type": "object",
         "properties": {}
+      },
+      "UpdateRaffleStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
       },
       "CreateTicketDto": {
         "type": "object",

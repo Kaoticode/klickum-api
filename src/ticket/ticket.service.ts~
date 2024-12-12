@@ -55,7 +55,6 @@ export class TicketService {
       .innerJoinAndSelect("ticket.raffle", "raffle")
       .leftJoinAndSelect("raffle.status", "status")
       .where("ticket.userId = :userId", { userId })
-      .andWhere("status.name <> :status", { status: "cancelled" })
       .orderBy("ticket.created_at", "DESC");
 
     return paginate<Ticket>(query, options);
