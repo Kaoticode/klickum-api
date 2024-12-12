@@ -27,3 +27,5 @@ jobs:
         run: npm ci
       - name: 'Build code'
         run: npm run build && find dist/main.js
+      - name: 'Test DB connection'
+        run: npm run migration:show
