@@ -54,11 +54,7 @@ export class OrderRepository extends BaseRepository {
       select: {
         status: { name: true },
         items: true,
-        user: {
-          id: true,
-          username: true,
-          email: true
-        }
+        user: true
       }
     });
   }
