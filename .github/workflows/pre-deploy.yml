@@ -1,4 +1,4 @@
-name: pre-merge.yml
+name: pre-deploy.yml
 
 on:
   push:
@@ -30,3 +30,7 @@ jobs:
         run: npm run build && find dist/main.js
       - name: 'Test DB connection'
         run: npm run migration:show
+      - name: 'Sync DB'
+        run: npm run migration:sync
+      - name: 'Run migrations'
+        run: npm run migration:run
