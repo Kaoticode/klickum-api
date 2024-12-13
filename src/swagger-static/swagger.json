@@ -157,8 +157,69 @@
         "operationId": "AuthController_getme",
         "parameters": [],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "isActive": {
+                      "type": "boolean"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "pattern": "^[0-9]{10}$"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "balance": {
+                      "type": "string",
+                      "format": "decimal"
+                    },
+                    "role": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "isActive",
+                    "created_at",
+                    "updated_at",
+                    "username",
+                    "phone",
+                    "email",
+                    "balance",
+                    "role"
+                  ]
+                }
+              }
+            }
           }
         },
         "tags": [
