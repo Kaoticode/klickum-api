@@ -67,7 +67,8 @@ export class OrderRepository extends BaseRepository {
         user: {
           id: true,
           username: true,
-          email: true
+          email: true,
+          phone: true
         }
       }
     });
