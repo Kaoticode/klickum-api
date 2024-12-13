@@ -34,9 +34,8 @@ export class OrderService {
     const user = await this.userservice.getUser(userId);
     const itemsReq = await this.itemService.getItems(items);
     const total = this.orderRepository.getTotalPrice(itemsReq);
-    if (user.balance < total) throw new BadRequestException("Not enough balance");
-
-    await this.userservice.update(user.id, { balance: user.balance - total });
+    await this.userservice.chargeBalances(user, total);
+    
   }
 
   async processOrder(processOrderDto: ProcessOrderDto) {

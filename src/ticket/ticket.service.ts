@@ -34,7 +34,7 @@ export class TicketService {
       throw new BadRequestException("The code is alredy reserved");
     }
 
-
+    await this.userservice.chargeBalances(user, Number(raffle.price));
     return this.ticketRepository.create({
       code,
       userId: user.id,
