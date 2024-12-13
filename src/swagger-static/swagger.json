@@ -157,8 +157,69 @@
         "operationId": "AuthController_getme",
         "parameters": [],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "isActive": {
+                      "type": "boolean"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "username": {
+                      "type": "string"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "pattern": "^[0-9]{10}$"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email"
+                    },
+                    "balance": {
+                      "type": "string",
+                      "format": "decimal"
+                    },
+                    "role": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "isActive",
+                    "created_at",
+                    "updated_at",
+                    "username",
+                    "phone",
+                    "email",
+                    "balance",
+                    "role"
+                  ]
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -478,6 +539,39 @@
         ]
       }
     },
+    "/product/status/{id}": {
+      "patch": {
+        "operationId": "ProductController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ]
+      }
+    },
     "/order": {
       "post": {
         "operationId": "OrderController_createOrder",
@@ -526,6 +620,33 @@
         ],
         "responses": {
           "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
+    "/order/pre-order": {
+      "post": {
+        "operationId": "OrderController_preOrder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateItemDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
             "description": ""
           }
         },
@@ -849,6 +970,39 @@
         ]
       }
     },
+    "/raffle/status/{id}": {
+      "patch": {
+        "operationId": "RaffleController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateRaffleStatusDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "raffle"
+        ]
+      }
+    },
     "/ticket": {
       "post": {
         "operationId": "TicketController_create",
@@ -979,10 +1133,14 @@
         "properties": {
           "isActive": {
             "type": "boolean"
+          },
+          "balance": {
+            "type": "number"
           }
         },
         "required": [
-          "isActive"
+          "isActive",
+          "balance"
         ]
       },
       "SignupUserDto": {
@@ -1092,6 +1250,17 @@
         "type": "object",
         "properties": {}
       },
+      "UpdateStatusProductDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
       "CreateItemDto": {
         "type": "object",
         "properties": {
@@ -1165,6 +1334,17 @@
       "UpdateRaffleDto": {
         "type": "object",
         "properties": {}
+      },
+      "UpdateRaffleStatusDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
       },
       "CreateTicketDto": {
         "type": "object",

@@ -34,7 +34,7 @@ export class TicketService {
       throw new BadRequestException("The code is alredy reserved");
     }
 
-
+    await this.userservice.chargeBalances(user, Number(raffle.price));
     return this.ticketRepository.create({
       code,
       userId: user.id,
@@ -53,7 +53,9 @@ export class TicketService {
 
     query
       .innerJoinAndSelect("ticket.raffle", "raffle")
+      .leftJoinAndSelect("raffle.status", "status")
       .where("ticket.userId = :userId", { userId })
+      .andWhere("status.name <> :status", { status: "cancelled" })
       .orderBy("ticket.created_at", "DESC");
 
     return paginate<Ticket>(query, options);

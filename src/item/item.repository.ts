@@ -67,4 +67,25 @@ export class ItemsRepository extends BaseRepository {
     return product;
   }
 
+  async getItems(data: CreateItemDto[]) {
+    return await Promise.all(
+      data.map(async (e) => {
+        const product = await this.findOneProduct(e.productId);
+
+        if (!product.isActive || product.status.name !== StatusEnum.available.valueOf()) {
+          throw new BadRequestException("product not avaible");
+        }
+
+        if (product.amount < e.amount)
+          throw new BadRequestException("Not enough products");
+
+        return {
+          order: { id: "" },
+          product: product,
+          amount: e.amount
+        } as Item;
+      })
+    );
+  }
+
 }

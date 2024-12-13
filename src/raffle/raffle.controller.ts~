@@ -75,7 +75,7 @@ export class RaffleController {
 
   @Patch("status/:id")
   @Permissions(Action.raffleUpdate)
-  async updateStatus(
+  async update(
     @Param("id") id: string,
     @Body() updateRaffleStatusDto: UpdateRaffleStatusDto
   ) {

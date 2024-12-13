@@ -12,6 +12,10 @@ export class ItemService {
     return await this.itemRepository.createItems(orderId, items);
   }
 
+  async getItems(items: CreateItemDto[]) {
+    return await this.itemRepository.getItems(items);
+  }
+
   async resetItems(order: Order) {
     const { id, items } = order;
     return this.itemRepository.resetItems(id, await items);

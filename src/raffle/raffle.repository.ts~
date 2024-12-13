@@ -29,7 +29,7 @@ export class RaffleRepository extends BaseRepository {
   async findOnebyId(id: string) {
     return await this.getRepository(Raffle).findOne({
       where: { id },
-      relations: ["rewards", "tickets", "tickets.user", "status"],
+      relations: ["rewards", "tickets", "tickets.user"],
       select: {
         tickets: {
           id: true,
