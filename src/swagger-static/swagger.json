@@ -478,6 +478,39 @@
         ]
       }
     },
+    "/product/status/{id}": {
+      "patch": {
+        "operationId": "ProductController_updateStatus",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateStatusProductDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "product"
+        ]
+      }
+    },
     "/order": {
       "post": {
         "operationId": "OrderController_createOrder",
@@ -1155,6 +1188,17 @@
       "UpdateProductDto": {
         "type": "object",
         "properties": {}
+      },
+      "UpdateStatusProductDto": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
       },
       "CreateItemDto": {
         "type": "object",
