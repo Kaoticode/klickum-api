@@ -534,6 +534,33 @@
         ]
       }
     },
+    "/order/pre-order": {
+      "post": {
+        "operationId": "OrderController_preOrder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateItemDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
     "/order/history": {
       "get": {
         "operationId": "OrderController_getUserOrders",
@@ -1012,10 +1039,14 @@
         "properties": {
           "isActive": {
             "type": "boolean"
+          },
+          "balance": {
+            "type": "number"
           }
         },
         "required": [
-          "isActive"
+          "isActive",
+          "balance"
         ]
       },
       "SignupUserDto": {

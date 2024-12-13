@@ -36,11 +36,21 @@ export class OrderRepository extends BaseRepository {
   }
 
   async setTotalPrice(order: Order, items: Item[]) {
+    /*
     const total_unit_price = items.map((item) => {
       return item.product.price * item.amount;
     });
     const totalPrice = total_unit_price.reduce((a, b) => a + b, 0);
+     */
+    const totalPrice = this.getTotalPrice(items);
     await this.getRepository(Order).update({ id: order.id }, { totalPrice });
+  }
+
+  getTotalPrice(items: Item[]) {
+    const total_unit_price = items.map((item) => {
+      return item.product.price * item.amount;
+    });
+    return total_unit_price.reduce((a, b) => a + b, 0);
   }
 
   async getOrderRepository() {

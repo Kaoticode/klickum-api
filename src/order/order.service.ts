@@ -30,6 +30,15 @@ export class OrderService {
     return order;
   }
 
+  async preCreate(userId: string, items: CreateOrderItemDto[]) {
+    const user = await this.userservice.getUser(userId);
+    const itemsReq = await this.itemService.getItems(items);
+    const total = this.orderRepository.getTotalPrice(itemsReq);
+    if (user.balance < total) throw new BadRequestException("Not enough balance");
+
+    await this.userservice.update(user.id, { balance: user.balance - total });
+  }
+
   async processOrder(processOrderDto: ProcessOrderDto) {
     const { orderId, api_key, payment_code } = processOrderDto;
     const order = await this.findOne(orderId);
