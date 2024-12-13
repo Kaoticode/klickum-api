@@ -33,7 +33,7 @@ export class OrderController {
   }
 
   @Post()
-  //@Permissions(Action.orderCreate)
+  @Permissions(Action.orderCreate)
   @UseInterceptors(TransactionInterceptor)
   @ApiBody({ type: [CreateItemDto] })
   async createOrder(
@@ -48,7 +48,7 @@ export class OrderController {
   }
 
   @Post("pre-order")
-  //@Permissions(Action.orderCreate)
+  @Permissions(Action.orderCreate)
   @UseInterceptors(TransactionInterceptor)
   @ApiBody({ type: [CreateItemDto] })
   async preOrder(
