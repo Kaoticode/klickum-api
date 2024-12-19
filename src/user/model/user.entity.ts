@@ -13,7 +13,7 @@ export class User extends BaseEntity {
   @Column()
   email: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 0 })
+  @Column({ type: "decimal", precision: 10, scale: 2, default: 2 })
   balance: number;
 
   @ManyToOne(() => Role, { eager: true })
