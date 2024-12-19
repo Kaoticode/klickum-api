@@ -40,6 +40,7 @@ export class RaffleRepository extends BaseRepository {
           user: {
             id: true,
             username: true,
+            phone: true,
             role: {
               id: false,
               name: false
