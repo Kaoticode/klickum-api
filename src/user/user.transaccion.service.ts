@@ -45,6 +45,10 @@ export class UserTransaccionService {
 
     if (!user) throw new BadRequestException('User not found');
 
+    if (Object.keys(updateUserDto).length === 0) {
+      throw new BadRequestException('No data to update');
+    }
+
     const { roleId, password, ...rest } = updateUserDto;
 
     if (rest.username) {
