@@ -48,6 +48,14 @@
             "schema": {
               "type": "number"
             }
+          },
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -707,6 +715,37 @@
         "tags": [
           "order"
         ]
+      },
+      "patch": {
+        "operationId": "OrderController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
       }
     },
     "/order/process": {
@@ -1279,6 +1318,17 @@
       "ProcessOrderDto": {
         "type": "object",
         "properties": {}
+      },
+      "UpdateOrderDto": {
+        "type": "object",
+        "properties": {
+          "isSent": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "isSent"
+        ]
       },
       "CreatePromotionDto": {
         "type": "object",

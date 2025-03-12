@@ -33,9 +33,14 @@ export class UserController {
     @Request() req,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+    @Query('search') search: string,
   ) {
     limit = limit > 100 ? 100 : limit;
-    return await this.userService.paginateAll({ page, limit }, req.user.sub);
+    return await this.userService.paginateAll(
+      { page, limit },
+      req.user.sub,
+      search,
+    );
   }
 
   @Get(':id')
