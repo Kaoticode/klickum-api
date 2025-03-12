@@ -20,10 +20,21 @@ export class UserTransaccionService {
     return await this.userRepository.getUser(id);
   }
 
-  async paginateAll(options: IPaginationOptions, userId: string) {
+  async paginateAll(
+    options: IPaginationOptions,
+    userId: string,
+    search?: string,
+  ) {
     const query = this.userRepository.getQueryBuilder();
 
     query.where('user.id != :userId', { userId });
+
+    if (search) {
+      query.andWhere('user.username LIKE :search', {
+        search: `%${search}%`,
+      });
+    }
+
     query.orderBy('user.created_at', 'DESC');
 
     return paginate<User>(query, options);

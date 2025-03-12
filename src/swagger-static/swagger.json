@@ -48,6 +48,14 @@
             "schema": {
               "type": "number"
             }
+          },
+          {
+            "name": "search",
+            "required": true,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
