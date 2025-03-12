@@ -9,6 +9,7 @@ import { StatusService } from '../status/status.service';
 import { ProcessOrderDto } from './domain/dto/processOrder.dto';
 import { ConfigService } from '@nestjs/config';
 import { StatusEnum } from '../status/domain/status.enum';
+import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
 
 @Injectable()
 export class OrderService {
@@ -47,6 +48,17 @@ export class OrderService {
     const status = await this.statusService.findOne('processing');
 
     await this.orderRepository.update(orderId, { status });
+  }
+
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
+    const order = await this.findOne(id);
+
+    if (Object.keys(updateOrderDto).length === 0) {
+      throw new BadRequestException('No data to update');
+    }
+
+    const { isSent } = updateOrderDto;
+    await this.orderRepository.update(id, { isSent });
   }
 
   async cancellOrder(orderId: string) {
