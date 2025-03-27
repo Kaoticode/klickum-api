@@ -19,6 +19,7 @@ import { StatusModule } from './status/status.module';
 import { PromotionModule } from './promotion/promotion.module';
 import { RaffleModule } from './raffle/raffle.module';
 import { TicketModule } from './ticket/ticket.module';
+import { CouponModule } from './coupon/coupon.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { TicketModule } from './ticket/ticket.module';
     PromotionModule,
     RaffleModule,
     TicketModule,
+    CouponModule,
   ],
   controllers: [AppController],
   providers: [AppService],
