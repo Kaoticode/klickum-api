@@ -1,6 +1,6 @@
-import { BaseEntity } from "../../common/model/base.entity";
-import { Role } from "../../role/model/role.entity";
-import { Column, Entity, ManyToOne } from "typeorm";
+import { BaseEntity } from '../../common/model/base.entity';
+import { Role } from '../../role/model/role.entity';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity()
 export class User extends BaseEntity {
@@ -13,7 +13,7 @@ export class User extends BaseEntity {
   @Column()
   email: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2, default: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   balance: number;
 
   @ManyToOne(() => Role, { eager: true })
