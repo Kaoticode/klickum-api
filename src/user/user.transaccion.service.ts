@@ -85,4 +85,10 @@ export class UserTransaccionService {
       throw new BadRequestException('Not enough balance');
     await this.update(user.id, { balance: user.balance - charge });
   }
+
+  async depositBalances(user: User, deposit: number) {
+    await this.update(user.id, {
+      balance: Number(user.balance) + Number(deposit),
+    });
+  }
 }

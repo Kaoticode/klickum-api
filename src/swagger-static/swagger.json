@@ -1150,6 +1150,106 @@
           "ticket"
         ]
       }
+    },
+    "/coupon": {
+      "post": {
+        "operationId": "CouponController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCouponDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "coupon"
+        ]
+      },
+      "get": {
+        "operationId": "CouponController_getAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "coupon"
+        ]
+      }
+    },
+    "/coupon/{id}": {
+      "delete": {
+        "operationId": "CouponController_delete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "coupon"
+        ]
+      }
+    },
+    "/coupon/use": {
+      "post": {
+        "operationId": "CouponController_useCoupon",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UseCouponDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "coupon"
+        ]
+      }
     }
   },
   "info": {
@@ -1408,6 +1508,36 @@
         },
         "required": [
           "raffleId",
+          "code"
+        ]
+      },
+      "CreateCouponDto": {
+        "type": "object",
+        "properties": {
+          "reward": {
+            "type": "number"
+          },
+          "usage_max": {
+            "type": "number"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "reward",
+          "usage_max",
+          "code"
+        ]
+      },
+      "UseCouponDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
           "code"
         ]
       }
