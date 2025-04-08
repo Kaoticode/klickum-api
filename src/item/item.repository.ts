@@ -88,9 +88,8 @@ export class ItemsRepository extends BaseRepository {
         if (product.amount < e.amount) {
           const { category, ...rest } = product;
           errors.push({ product: rest, message: 'Not enough products' });
+          return;
         }
-
-        if (errors.length > 0) throw new BadRequestException(errors);
 
         return {
           order: { id: '' },
@@ -99,6 +98,7 @@ export class ItemsRepository extends BaseRepository {
         } as Item;
       }),
     );
+    if (errors.length > 0) throw new BadRequestException(errors);
     return itens;
   }
 }
