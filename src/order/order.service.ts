@@ -33,8 +33,9 @@ export class OrderService {
   async preCreate(userId: string, items: CreateOrderItemDto[]) {
     const user = await this.userservice.getUser(userId);
     const itemsReq = await this.itemService.getItems(items);
-    const total = this.orderRepository.getTotalPrice(itemsReq);
-    await this.userservice.chargeBalances(user, total);
+    console.log(itemsReq);
+    //const total = this.orderRepository.getTotalPrice(itemsReq);
+    //await this.userservice.chargeBalances(user, total);
   }
 
   async processOrder(processOrderDto: ProcessOrderDto) {
