@@ -580,6 +580,62 @@
         ]
       }
     },
+    "/order": {
+      "post": {
+        "operationId": "OrderController_createOrder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/CreateItemDto"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      },
+      "get": {
+        "operationId": "OrderController_getAllOrders",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
     "/order/pre-order": {
       "post": {
         "operationId": "OrderController_preOrder",
@@ -610,37 +666,6 @@
     "/order/history": {
       "get": {
         "operationId": "OrderController_getUserOrders",
-        "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "schema": {
-              "type": "number"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        },
-        "tags": [
-          "order"
-        ]
-      }
-    },
-    "/order": {
-      "get": {
-        "operationId": "OrderController_getAllOrders",
         "parameters": [
           {
             "name": "page",
