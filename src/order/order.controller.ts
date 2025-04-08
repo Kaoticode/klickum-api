@@ -32,7 +32,6 @@ import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
 export class OrderController {
   constructor(private orderService: OrderService) {}
 
-  /*
   @Post()
   //@Permissions(Action.orderCreate)
   @UseInterceptors(TransactionInterceptor)
@@ -47,7 +46,6 @@ export class OrderController {
     }
     return await this.orderService.create(req.user.sub, data);
   }
-    */
 
   @Post('pre-order')
   //@Permissions(Action.orderCreate)
