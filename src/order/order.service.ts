@@ -34,6 +34,7 @@ export class OrderService {
     const user = await this.userservice.getUser(userId);
     const itemsReq = await this.itemService.getItems(items);
     console.log(itemsReq);
+    return itemsReq;
     //const total = this.orderRepository.getTotalPrice(itemsReq);
     //await this.userservice.chargeBalances(user, total);
   }
