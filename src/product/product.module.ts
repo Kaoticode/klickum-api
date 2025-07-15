@@ -7,8 +7,9 @@ import { CategoryService } from '../category/category.service';
 import { Category } from '../category/model/category.entity';
 import { StatusModule } from '../status/status.module';
 import { CommonModule } from '../common/common.module';
-import { AuthModule } from 'src/auth/auth.module';
+import { AuthModule } from '../auth/auth.module';
 import { ProductRepository } from './product.repository';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 
 @Module({
   imports: [
@@ -17,7 +18,12 @@ import { ProductRepository } from './product.repository';
     CommonModule,
     AuthModule,
   ],
-  providers: [ProductService, CategoryService, ProductRepository],
+  providers: [
+    ProductService,
+    CategoryService,
+    ProductRepository,
+    CloudinaryService,
+  ],
   controllers: [ProductController],
 })
 export class ProductModule {}

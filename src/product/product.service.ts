@@ -16,6 +16,8 @@ import { ImageRepository } from '../common/services/imageRepository';
 import { StatusEnum, StatusType } from '../status/domain/status.enum';
 import { ProductRepository } from './product.repository';
 import { UpdateStatusProductDto } from './domain/dto/updateStatusProduct.dto';
+import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { Image } from '../common/model/image.entity';
 
 @Injectable()
 export class ProductService {
@@ -28,6 +30,7 @@ export class ProductService {
     private readonly statusService: StatusService,
     private readonly imageRepository: ImageRepository,
     private readonly productRepo: ProductRepository,
+    private readonly cloudinaryService: CloudinaryService,
   ) {}
 
   async create(createProductDto: CreateProductDto) {
@@ -93,15 +96,22 @@ export class ProductService {
 
     if (!product) throw new BadRequestException('Product not found');
 
-    const uploads = await this.fileUpload.upload(files, { path: 'products' });
-
-    const images = await Promise.all(
-      uploads.map((upload) => {
-        return this.imageRepository.create(upload);
-      }),
-    );
-
-    product.images = images;
+    if (files && files.length > 0) {
+      const images: Image[] = [];
+      await Promise.all(
+        files.map(async (file) => {
+          const image = new Image();
+          image.url = (
+            await this.cloudinaryService.uploadFile(file)
+          ).secure_url;
+          image.filename = file.originalname;
+          image.size = file.size;
+          image.mimetype = file.mimetype;
+          images.push(image);
+        }),
+      );
+      product.images = images;
+    }
     return await this.productRepository.save(product);
   }
 

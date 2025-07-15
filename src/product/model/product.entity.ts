@@ -26,7 +26,7 @@ export class Product extends BaseEntity {
   @ManyToOne(() => Status)
   status: Status;
 
-  @ManyToMany(() => Image)
+  @ManyToMany(() => Image, { cascade: true })
   @JoinTable({
     name: 'product_images',
     joinColumn: { name: 'productId', referencedColumnName: 'id' },
