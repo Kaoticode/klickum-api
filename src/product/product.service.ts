@@ -4,7 +4,7 @@ import { CreateProductDto } from './domain/dto/createProduct.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './model/product.entity';
 import { Repository } from 'typeorm';
-import { CategoryService } from 'src/category/category.service';
+import { CategoryService } from '../category/category.service';
 import { UpdateProductDto } from './domain/dto/updateProduct.dto';
 import {
   IPaginationOptions,
@@ -16,7 +16,7 @@ import { ImageRepository } from '../common/services/imageRepository';
 import { StatusEnum, StatusType } from '../status/domain/status.enum';
 import { ProductRepository } from './product.repository';
 import { UpdateStatusProductDto } from './domain/dto/updateStatusProduct.dto';
-import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Image } from '../common/model/image.entity';
 
 @Injectable()

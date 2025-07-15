@@ -3,7 +3,7 @@ import { CouponController } from './coupon.controller';
 import { CouponService } from './coupon.service';
 import { Coupon } from './model/coupon.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { StatusModule } from 'src/status/status.module';
+import { StatusModule } from '../status/status.module';
 import { CouponUsage } from './model/coupon_usage.entity';
 import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
