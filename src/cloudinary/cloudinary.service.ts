@@ -12,7 +12,7 @@ export class CloudinaryService {
   uploadFile(file: Express.Multer.File): Promise<CloudinaryResponse> {
     return new Promise<CloudinaryResponse>((resolve, reject) => {
       const uploadStream = cloudinary.uploader.upload_stream(
-        { resource_type: 'auto' },
+        { resource_type: 'auto', folder: 'klickum-api' },
         (error, result) => {
           if (error) return reject(error);
           resolve(result);
