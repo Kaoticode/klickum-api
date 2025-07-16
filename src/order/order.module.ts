@@ -7,12 +7,6 @@ import { UserModule } from '../user/user.module';
 import { AuthModule } from '../auth/auth.module';
 import { StatusModule } from '../status/status.module';
 import { ConfigService } from '@nestjs/config';
-/*
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Order } from './model/order.entity';
-import { OrderItem } from './model/orderItem.entity';
-import { Product } from 'src/product/model/product.entity';
-*/
 
 @Module({
   imports: [ItemModule, UserModule, AuthModule, StatusModule],

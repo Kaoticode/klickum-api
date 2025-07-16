@@ -20,6 +20,7 @@ import { PromotionModule } from './promotion/promotion.module';
 import { RaffleModule } from './raffle/raffle.module';
 import { TicketModule } from './ticket/ticket.module';
 import { CouponModule } from './coupon/coupon.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { CouponModule } from './coupon/coupon.module';
         configService.get('typeorm'),
       inject: [ConfigService],
     }),
+    CloudinaryModule,
     UserModule,
     AuthModule,
     CategoryModule,
