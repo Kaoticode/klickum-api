@@ -18,6 +18,7 @@ import { ProductRepository } from './product.repository';
 import { UpdateStatusProductDto } from './domain/dto/updateStatusProduct.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Image } from '../common/model/image.entity';
+import { ProductProps } from '../common/decorator/product.props.query';
 
 @Injectable()
 export class ProductService {
@@ -115,13 +116,24 @@ export class ProductService {
     return await this.productRepository.save(product);
   }
 
-  async paginate(options: IPaginationOptions): Promise<Pagination<Product>> {
+  async paginate(
+    options: IPaginationOptions,
+    productProps: ProductProps,
+  ): Promise<Pagination<Product>> {
     const query = this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.status', 'status')
       .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.images', 'image')
-      .where('status.name <> :status', { status: 'discontinued' })
+      .leftJoinAndSelect('product.images', 'image');
+
+    if (productProps.categoryId) {
+      query.where('category.id = :categoryId', {
+        categoryId: productProps.categoryId,
+      });
+    }
+
+    query
+      .andWhere('status.name <> :status', { status: 'discontinued' })
       .andWhere('product.isActive = :isActive', { isActive: true })
       .select(['product', 'status.name', 'category.name', 'image.url']);
 
@@ -130,13 +142,21 @@ export class ProductService {
 
   async adminPaginate(
     options: IPaginationOptions,
+    productProps: ProductProps,
   ): Promise<Pagination<Product>> {
     const query = this.productRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.status', 'status')
       .leftJoinAndSelect('product.category', 'category')
-      .leftJoinAndSelect('product.images', 'image')
-      .select(['product', 'status.name', 'category.name', 'image.url']);
+      .leftJoinAndSelect('product.images', 'image');
+
+    if (productProps.categoryId) {
+      query.where('category.id = :categoryId', {
+        categoryId: productProps.categoryId,
+      });
+    }
+
+    query.select(['product', 'status.name', 'category.name', 'image.url']);
 
     return paginate<Product>(query, options);
   }
