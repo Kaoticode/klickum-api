@@ -143,7 +143,13 @@ export class ProductService {
     query
       .andWhere('status.name <> :status', { status: 'discontinued' })
       .andWhere('product.isActive = :isActive', { isActive: true })
-      .select(['product', 'status.name', 'category.name', 'image.url']);
+      .select([
+        'product',
+        'status.name',
+        'category.id',
+        'category.name',
+        'image.url',
+      ]);
 
     return paginate<Product>(query, options);
   }
@@ -170,7 +176,13 @@ export class ProductService {
       });
     }
 
-    query.select(['product', 'status.name', 'category.name', 'image.url']);
+    query.select([
+      'product',
+      'status.name',
+      'category.id',
+      'category.name',
+      'image.url',
+    ]);
 
     return paginate<Product>(query, options);
   }
