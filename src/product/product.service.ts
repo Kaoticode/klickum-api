@@ -164,6 +164,12 @@ export class ProductService {
       });
     }
 
+    if (productProps.promoted !== undefined) {
+      query.where('product.promoted = :promoted', {
+        promoted: productProps.promoted,
+      });
+    }
+
     query.select(['product', 'status.name', 'category.name', 'image.url']);
 
     return paginate<Product>(query, options);
