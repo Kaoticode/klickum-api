@@ -132,6 +132,14 @@ export class ProductService {
       });
     }
 
+    if (productProps.promoted !== undefined) {
+      query.where('product.promoted = :promoted', {
+        promoted: productProps.promoted,
+      });
+    }
+
+    console.log('ProductProps:', productProps);
+
     query
       .andWhere('status.name <> :status', { status: 'discontinued' })
       .andWhere('product.isActive = :isActive', { isActive: true })

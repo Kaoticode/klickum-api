@@ -9,7 +9,8 @@ import { validate } from 'class-validator';
 import { ProductPropsDto } from '../domain/dto/product.props.dto';
 
 export interface ProductProps {
-  categoryId: string;
+  categoryId?: string;
+  promoted?: boolean;
 }
 
 export const ProductPropsParams = createParamDecorator(
@@ -18,6 +19,7 @@ export const ProductPropsParams = createParamDecorator(
 
     const queryParams = {
       categoryId: req.query.categoryId,
+      promoted: req.query.promoted ? req.query.promoted === 'true' : undefined,
     };
 
     const productPropsDto = plainToInstance(ProductPropsDto, queryParams);

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -34,6 +35,11 @@ export class CreateProductDto {
   @IsInt()
   @NotEquals(0)
   amount: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsBoolean()
+  promoted: boolean;
 
   @ApiProperty()
   @Transform(({ value }): string => (value as string).trim())

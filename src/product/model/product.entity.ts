@@ -26,6 +26,9 @@ export class Product extends BaseEntity {
   @ManyToOne(() => Status)
   status: Status;
 
+  @Column({ default: false })
+  promoted: boolean;
+
   @ManyToMany(() => Image, { cascade: true })
   @JoinTable({
     name: 'product_images',
