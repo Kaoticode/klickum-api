@@ -408,6 +408,22 @@
             "schema": {
               "type": "number"
             }
+          },
+          {
+            "name": "promoted",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "categoryId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
           }
         ],
         "responses": {
@@ -488,6 +504,22 @@
           },
           {
             "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "promoted",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "categoryId",
             "required": false,
             "in": "query",
             "schema": {
@@ -1373,6 +1405,9 @@
           "amount": {
             "type": "number"
           },
+          "promoted": {
+            "type": "boolean"
+          },
           "category": {
             "type": "string"
           }
@@ -1382,6 +1417,7 @@
           "price",
           "description",
           "amount",
+          "promoted",
           "category"
         ]
       },
