@@ -82,10 +82,15 @@ export class ProductService {
   }
 
   async findById(id: string) {
-    const product = await this.productRepository.findOne({
-      where: { id },
-      relations: { status: true },
-    });
+    const product = await this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.status', 'status')
+      .leftJoinAndSelect('product.category', 'category')
+      .leftJoinAndSelect('product.images', 'image')
+      .where('product.id = :id', { id })
+      .select(['product', 'status', 'category', 'image.url'])
+      .getOne();
+
     if (!product) throw new BadRequestException('Product not found');
     return product;
   }
