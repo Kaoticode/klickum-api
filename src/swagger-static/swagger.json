@@ -428,7 +428,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -482,7 +489,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -529,7 +543,14 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1410,6 +1431,13 @@
           },
           "category": {
             "type": "string"
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital"
+            ]
           }
         },
         "required": [
@@ -1418,12 +1446,161 @@
           "description",
           "amount",
           "promoted",
-          "category"
+          "category",
+          "productType"
         ]
       },
       "UpdateProductDto": {
         "type": "object",
         "properties": {}
+      },
+      "MetaDataDto": {
+        "type": "object",
+        "properties": {
+          "totalItems": {
+            "type": "number"
+          },
+          "itemCount": {
+            "type": "number"
+          },
+          "itemsPerPage": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          },
+          "currentPage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "totalItems",
+          "itemCount",
+          "itemsPerPage",
+          "totalPages",
+          "currentPage"
+        ]
+      },
+      "ProductMetadataDto": {
+        "type": "object",
+        "properties": {
+          "productType": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productType"
+        ]
+      },
+      "ProductStatusDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "ProductCategoryDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ]
+      },
+      "ProductReponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "price": {
+            "type": "string"
+          },
+          "promoted": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/ProductMetadataDto"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProductStatusDto"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ProductCategoryDto"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "isActive",
+          "created_at",
+          "updated_at",
+          "name",
+          "description",
+          "amount",
+          "price",
+          "promoted",
+          "metadata",
+          "status",
+          "category",
+          "images"
+        ]
+      },
+      "PaginatedProductReponseDto": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/MetaDataDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductReponseDto"
+            }
+          }
+        },
+        "required": [
+          "meta",
+          "items"
+        ]
       },
       "UpdateStatusProductDto": {
         "type": "object",

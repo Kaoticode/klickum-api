@@ -2,14 +2,17 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import {
   IsBoolean,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   MaxLength,
   MinLength,
   NotEquals,
 } from 'class-validator';
+import { ProductType } from '../product.metadata.interface';
 
 export class CreateProductDto {
   @ApiProperty()
@@ -48,4 +51,10 @@ export class CreateProductDto {
   @MinLength(3)
   @MaxLength(15)
   category: string;
+
+  @ApiProperty({ enum: ['physical', 'digital'] })
+  @IsOptional()
+  @IsString()
+  @IsIn(['physical', 'digital'])
+  productType: ProductType = 'physical';
 }

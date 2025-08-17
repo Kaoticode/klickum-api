@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { Status } from '../../status/model/status.entity';
 import { Image } from '../../common/model/image.entity';
+import { ProductMetadata } from '../domain/product.metadata.interface';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -42,4 +43,11 @@ export class Product extends BaseEntity {
 
   @OneToMany((type) => Item, (item) => item.product)
   items: Promise<Item[]>;
+
+  @Column({
+    type: 'jsonb',
+    default: () => "'{}'",
+    nullable: true,
+  })
+  metadata: ProductMetadata;
 }
