@@ -19,6 +19,7 @@ import { UpdateStatusProductDto } from './domain/dto/updateStatusProduct.dto';
 import { CloudinaryService } from '../cloudinary/cloudinary.service';
 import { Image } from '../common/model/image.entity';
 import { ProductProps } from '../common/decorator/product.props.query';
+import { ProductMetadata } from './domain/product.metadata.interface';
 
 @Injectable()
 export class ProductService {
@@ -46,10 +47,19 @@ export class ProductService {
 
     const category = await this.categoryService.findOrCreate(category_name);
 
+    const metadata: ProductMetadata = {
+      productType: 'physical',
+    };
+
+    if (createProductDto.productType) {
+      metadata.productType = createProductDto.productType;
+    }
+
     return await this.productRepository.save({
       ...createProductDto,
       category,
       status,
+      metadata,
     });
   }
 
@@ -59,11 +69,22 @@ export class ProductService {
         where: { id },
       });
 
-      const { category, ...rest } = updateProductDto;
+      const { category, productType, ...rest } = updateProductDto;
 
       if (!product) throw new BadRequestException('Product not found');
 
-      const update = await this.productRepository.update({ id }, rest);
+      const metadata: ProductMetadata = {
+        productType: product.metadata.productType || 'physical',
+      };
+
+      if (productType) {
+        metadata.productType = productType;
+      }
+
+      const update = await this.productRepository.update(
+        { id },
+        { ...rest, metadata },
+      );
 
       if (category) {
         const change_category = await this.categoryService.findOrCreate(

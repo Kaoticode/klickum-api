@@ -14,7 +14,13 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { CreateProductDto } from './domain/dto/createProduct.dto';
 import { UpdateProductDto } from './domain/dto/updateProduct.dto';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
@@ -29,6 +35,10 @@ import {
   ProductProps,
   ProductPropsParams,
 } from '../common/decorator/product.props.query';
+import {
+  PaginatedProductReponseDto,
+  ProductReponseDto,
+} from './domain/docs/product.reponse.dto';
 
 @ApiTags('product')
 @Controller('product')
@@ -57,6 +67,7 @@ export class ProductController {
   @ApiQuery({ name: 'limit', type: Number, required: false })
   @ApiQuery({ name: 'categoryId', type: Number, required: false })
   @ApiQuery({ name: 'promoted', type: Number, required: false })
+  @ApiResponse({ type: PaginatedProductReponseDto, status: 200 })
   async findAll(
     @ProductPropsParams() productProps: ProductProps,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -73,6 +84,7 @@ export class ProductController {
   @ApiQuery({ name: 'limit', type: Number, required: false })
   @ApiQuery({ name: 'categoryId', type: Number, required: false })
   @ApiQuery({ name: 'promoted', type: Number, required: false })
+  @ApiResponse({ type: PaginatedProductReponseDto, status: 200 })
   async adminFindAll(
     @ProductPropsParams() productProps: ProductProps,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -119,6 +131,7 @@ export class ProductController {
   }
 
   @Get(':id')
+  @ApiResponse({ status: 200, type: ProductReponseDto })
   async findById(@Param('id', ParseUUIDPipe) id: string) {
     return this.productService.findById(id);
   }
