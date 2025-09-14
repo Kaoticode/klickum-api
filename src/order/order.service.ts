@@ -10,6 +10,7 @@ import { ProcessOrderDto } from './domain/dto/processOrder.dto';
 import { ConfigService } from '@nestjs/config';
 import { StatusEnum } from '../status/domain/status.enum';
 import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
+import { CreateCompleteOrderDto } from '../item/domain/dto/createItem.dto';
 
 @Injectable()
 export class OrderService {
@@ -21,10 +22,14 @@ export class OrderService {
     private readonly configService: ConfigService,
   ) {}
 
-  async create(userId: string, items: CreateOrderItemDto[]) {
+  async create(userId: string, { addressId, items }: CreateCompleteOrderDto) {
     const user = await this.userservice.getUser(userId);
     const status = await this.statusService.findOne('pending');
-    const order = await this.orderRepository.createOrder(user.id, status);
+    const order = await this.orderRepository.createOrder(
+      user.id,
+      status,
+      addressId,
+    );
     const orderItems = await this.itemService.createItems(order.id, items);
     await this.orderRepository.setTotalPrice(order, orderItems);
     return order;
@@ -81,8 +86,25 @@ export class OrderService {
       .leftJoinAndSelect('order.items', 'item')
       .leftJoinAndSelect('item.product', 'product')
       .leftJoinAndSelect('order.status', 'status')
+      .leftJoin('order.address', 'address')
+      .leftJoin('address.city', 'city')
+      .leftJoin('city.country', 'country')
       .where('(order.userId = :userId)')
-      .select(['order', 'item', 'product.id', 'product.name', 'status.name'])
+      .select([
+        'order',
+        'item',
+        'product.id',
+        'product.name',
+        'status.name',
+        'address.id',
+        'address.streetName',
+        'address.streetNumber',
+        'address.zipcode',
+        'city',
+        'country.id',
+        'country.name',
+        'country.iso3',
+      ])
       .setParameters({ userId })
       .orderBy('order.created_at', 'DESC');
 
@@ -99,6 +121,9 @@ export class OrderService {
       .leftJoinAndSelect('item.product', 'product')
       .leftJoinAndSelect('order.status', 'status')
       .leftJoinAndSelect('order.user', 'user')
+      .leftJoin('order.address', 'address')
+      .leftJoin('address.city', 'city')
+      .leftJoin('city.country', 'country')
       .select([
         'order',
         'item',
@@ -109,6 +134,14 @@ export class OrderService {
         'user.username',
         'user.email',
         'user.phone',
+        'address.id',
+        'address.streetName',
+        'address.streetNumber',
+        'address.zipcode',
+        'city',
+        'country.id',
+        'country.name',
+        'country.iso3',
       ])
       .orderBy('order.created_at', 'DESC');
 

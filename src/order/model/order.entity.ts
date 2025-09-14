@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../common/model/base.entity';
 import { Item } from '../../item/model/item.entity';
 import { Status } from '../../status/model/status.entity';
+import { Address } from '../../address/model/address.entity';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -26,4 +27,7 @@ export class Order extends BaseEntity {
 
   @OneToMany((type) => Item, (item) => item.order)
   items: Promise<Item[]>;
+
+  @ManyToOne(() => Address, { nullable: true })
+  address: Address;
 }

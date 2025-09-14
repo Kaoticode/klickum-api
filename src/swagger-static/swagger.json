@@ -767,10 +767,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/CreateItemDto"
-                }
+                "$ref": "#/components/schemas/CreateCompleteOrderDto"
               }
             }
           }
@@ -1763,6 +1760,24 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "CreateCompleteOrderDto": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "addressId",
+          "items"
         ]
       },
       "CreateItemDto": {

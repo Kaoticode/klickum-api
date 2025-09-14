@@ -23,12 +23,13 @@ export class OrderRepository extends BaseRepository {
     });
   }
 
-  async createOrder(userId: string, status: Status) {
+  async createOrder(userId: string, status: Status, addressId: string) {
     const ordersRepository = this.getRepository(Order);
 
     const order = ordersRepository.create({
       user: { id: userId },
       status,
+      address: { id: addressId },
     });
     await ordersRepository.insert(order);
 
@@ -60,7 +61,12 @@ export class OrderRepository extends BaseRepository {
   async findOne(id: string) {
     return this.getRepository(Order).findOne({
       where: { id },
-      relations: { items: { product: true }, status: true, user: true },
+      relations: {
+        items: { product: true },
+        status: true,
+        user: true,
+        address: { city: { country: true } },
+      },
       select: {
         status: { name: true },
         items: true,
@@ -69,6 +75,17 @@ export class OrderRepository extends BaseRepository {
           username: true,
           email: true,
           phone: true,
+        },
+        address: {
+          id: true,
+          streetName: true,
+          streetNumber: true,
+          zipcode: true,
+          city: {
+            id: true,
+            name: true,
+            country: { id: true, name: true, iso3: true },
+          },
         },
       },
     });
