@@ -7,23 +7,29 @@ import {
   ParseIntPipe,
   ParseUUIDPipe,
   Patch,
+  Post,
   Query,
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { UserTransaccionService } from './user.transaccion.service';
 import { UpdateCreateDUserDto } from './domain/dto/updateUser.dto';
 import { Permissions } from '../common/decorator/permissions.decorator';
 import { Action } from '../role/domain/action.enum';
+import { AddressService } from '../address/address.service';
+import { CreateAddressDto } from '../address/domain/dto/create.address.dto';
 
 @ApiTags('user')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserTransaccionService) {}
+  constructor(
+    private readonly userService: UserTransaccionService,
+    private readonly addressService: AddressService,
+  ) {}
 
   @Get()
   @Permissions(Action.usersRead)
@@ -59,5 +65,31 @@ export class UserController {
       return this.userService.update(id, updateCreatedUserDto);
     }
     return;
+  }
+
+  @Get('address/find')
+  @Permissions(Action.usersRead)
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  async getAddress(
+    @Request() req,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return this.addressService.paginateAddressByUser(req.user.sub, {
+      page,
+      limit,
+    });
+  }
+
+  @Post('address')
+  @Permissions(Action.usersUpdate)
+  @ApiBody({ type: CreateAddressDto })
+  async createAddress(
+    @Request() req,
+    @Body() createAddressDto: CreateAddressDto,
+  ) {
+    return this.addressService.createAddress(req.user.sub, createAddressDto);
   }
 }
