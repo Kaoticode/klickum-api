@@ -24,8 +24,20 @@ export class AddressService {
 
   async paginateCountry(
     options: IPaginationOptions,
+    search?: string,
   ): Promise<Pagination<Country>> {
-    return paginate<Country>(this.countryRepository, options);
+    const queryBuilder = this.countryRepository.createQueryBuilder('country');
+
+    if (search) {
+      queryBuilder
+        .where('country.name LIKE :search', { search: `%${search}%` })
+        .orWhere('country.nombre LIKE :search', { search: `%${search}%` })
+        .orWhere('country.nom LIKE :search', { search: `%${search}%` })
+        .orWhere('country.iso2 LIKE :search', { search: `%${search}%` })
+        .orWhere('country.iso3 LIKE :search', { search: `%${search}%` });
+    }
+
+    return paginate<Country>(queryBuilder, options);
   }
 
   async paginateCity(
