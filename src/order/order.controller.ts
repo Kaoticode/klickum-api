@@ -17,7 +17,10 @@ import {
 } from '@nestjs/common';
 import { TransactionInterceptor } from '../common/services/transaction.interceptor';
 import { OrderService } from './order.service';
-import { CreateItemDto } from '../item/domain/dto/createItem.dto';
+import {
+  CreateCompleteOrderDto,
+  CreateItemDto,
+} from '../item/domain/dto/createItem.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
 import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
@@ -35,15 +38,12 @@ export class OrderController {
   @Post()
   //@Permissions(Action.orderCreate)
   @UseInterceptors(TransactionInterceptor)
-  @ApiBody({ type: [CreateItemDto] })
+  @ApiBody({ type: CreateCompleteOrderDto })
   async createOrder(
-    @Body(new ParseArrayPipe({ items: CreateItemDto }))
-    data: CreateItemDto[],
+    @Body()
+    data: CreateCompleteOrderDto,
     @Request() req,
   ) {
-    if (data.length === 0) {
-      throw new BadRequestException('Data array must not be empty.');
-    }
     return await this.orderService.create(req.user.sub, data);
   }
 

@@ -1,11 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
+  IsArray,
   IsInt,
   IsNotEmpty,
   IsString,
   IsUUID,
   NotEquals,
+  ValidateNested,
 } from 'class-validator';
 
 export class CreateItemDto {
@@ -21,4 +23,20 @@ export class CreateItemDto {
   @IsInt()
   @NotEquals(0)
   amount: number;
+}
+
+export class CreateCompleteOrderDto {
+  @ApiProperty()
+  @Transform(({ value }): string => (value as string).trim())
+  @IsString()
+  @IsNotEmpty()
+  @IsUUID()
+  addressId: string;
+
+  @ApiProperty()
+  @IsArray()
+  @IsNotEmpty()
+  @ValidateNested({ each: true })
+  @Type(() => CreateItemDto)
+  items: CreateItemDto[];
 }

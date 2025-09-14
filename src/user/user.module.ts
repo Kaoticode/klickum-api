@@ -8,9 +8,15 @@ import { UserTransaccionService } from './user.transaccion.service';
 import { AuthModule } from '../auth/auth.module';
 import { RoleModule } from '../role/role.module';
 import { HashService } from '../common/services/hash.service';
+import { AddressModule } from '../address/address.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), AuthModule, RoleModule],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    AuthModule,
+    RoleModule,
+    AddressModule,
+  ],
   providers: [UserService, UserRepository, UserTransaccionService, HashService],
   exports: [UserService, UserTransaccionService],
   controllers: [UserController],

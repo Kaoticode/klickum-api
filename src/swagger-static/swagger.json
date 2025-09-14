@@ -122,6 +122,61 @@
         ]
       }
     },
+    "/user/address/find": {
+      "get": {
+        "operationId": "UserController_getAddress",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/user/address": {
+      "post": {
+        "operationId": "UserController_createAddress",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateAddressDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
     "/auth/signup": {
       "post": {
         "operationId": "AuthController_signUp",
@@ -311,6 +366,76 @@
         },
         "tags": [
           "role"
+        ]
+      }
+    },
+    "/address/country": {
+      "get": {
+        "operationId": "AddressController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "address"
+        ]
+      }
+    },
+    "/address/city": {
+      "get": {
+        "operationId": "AddressController_findAllCity",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "iso3",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "address"
         ]
       }
     },
@@ -642,10 +767,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": "array",
-                "items": {
-                  "$ref": "#/components/schemas/CreateItemDto"
-                }
+                "$ref": "#/components/schemas/CreateCompleteOrderDto"
               }
             }
           }
@@ -1335,6 +1457,33 @@
           "balance"
         ]
       },
+      "CreateAddressDto": {
+        "type": "object",
+        "properties": {
+          "zipcode": {
+            "type": "string"
+          },
+          "streetNumber": {
+            "type": "string"
+          },
+          "streetName": {
+            "type": "string"
+          },
+          "countryId": {
+            "type": "number"
+          },
+          "cityName": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "zipcode",
+          "streetNumber",
+          "streetName",
+          "countryId",
+          "cityName"
+        ]
+      },
       "SignupUserDto": {
         "type": "object",
         "properties": {
@@ -1611,6 +1760,24 @@
         },
         "required": [
           "status"
+        ]
+      },
+      "CreateCompleteOrderDto": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "addressId",
+          "items"
         ]
       },
       "CreateItemDto": {
