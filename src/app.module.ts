@@ -21,6 +21,7 @@ import { RaffleModule } from './raffle/raffle.module';
 import { TicketModule } from './ticket/ticket.module';
 import { CouponModule } from './coupon/coupon.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
     RaffleModule,
     TicketModule,
     CouponModule,
+    AddressModule,
   ],
   controllers: [AppController],
   providers: [AppService],
