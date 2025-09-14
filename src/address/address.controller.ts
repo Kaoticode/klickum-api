@@ -20,15 +20,17 @@ export class AddressController {
   @Get('country')
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiQuery({ name: 'search', type: String, required: false })
   @ApiResponse({
     status: 200,
   })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+    @Query('search') search: string,
   ) {
     limit = limit > 100 ? 100 : limit;
-    return this.service.paginateCountry({ page, limit });
+    return this.service.paginateCountry({ page, limit }, search);
   }
 
   @Get('city')
