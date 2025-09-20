@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
+  Logger,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -18,6 +19,7 @@ import { MessageStrategy } from '../messageGateway/domain/messageStratergy';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   constructor(
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
@@ -40,32 +42,37 @@ export class AuthService {
   async signUp(signupUserDto: SignupUserDto) {
     const { username, email } = signupUserDto;
 
-    const userExists = await this.userService.findOneByUsername(username);
+    try {
+      const userExists = await this.userService.findOneByUsername(username);
 
-    const role = await this.getBaseRole();
+      const role = await this.getBaseRole();
 
-    const emailExists = await this.userService.findOneByEmail(email);
+      const emailExists = await this.userService.findOneByEmail(email);
 
-    if (userExists || emailExists) {
-      throw new BadRequestException('User already exists');
+      if (userExists || emailExists) {
+        throw new BadRequestException('User already exists');
+      }
+
+      const { password } = signupUserDto;
+
+      const hashedPassword = await this.hashService.hash(password);
+
+      const user = await this.userService.create({
+        ...signupUserDto,
+        role,
+        password: hashedPassword,
+      });
+
+      await this.messageStrategy.sendMessage({
+        number: user.phone,
+        useCase: 'register',
+      });
+
+      return this.signIn(user);
+    } catch (error) {
+      this.logger.error('Error in signUp', JSON.stringify(error));
+      throw error;
     }
-
-    const { password } = signupUserDto;
-
-    const hashedPassword = await this.hashService.hash(password);
-
-    const user = await this.userService.create({
-      ...signupUserDto,
-      role,
-      password: hashedPassword,
-    });
-
-    await this.messageStrategy.sendMessage({
-      number: user.phone,
-      useCase: 'register',
-    });
-
-    return this.signIn(user);
   }
 
   async validate(username: string, password: string) {
