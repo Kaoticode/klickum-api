@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  Inject,
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { SignupUserDto } from '../user/domain/dto/signupUser.dto';
 import { User } from '../user/model/user.entity';
 import { UserService } from '../user/user.service';
 import { ChangePasswordDto } from '../user/domain/dto/changePassword.dto';
+import { MessageStrategy } from 'src/messageGateway/domain/messageStratergy';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +24,8 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly hashService: HashService,
     private readonly rolesService: RoleService, //private readonly userRepository: UserRepository
+    @Inject(MessageStrategy.name)
+    private readonly messageStrategy: MessageStrategy,
   ) {}
 
   private async getBaseRole() {
@@ -54,6 +58,11 @@ export class AuthService {
       ...signupUserDto,
       role,
       password: hashedPassword,
+    });
+
+    await this.messageStrategy.sendMessage({
+      number: user.phone,
+      useCase: 'register',
     });
 
     return this.signIn(user);
