@@ -11,7 +11,7 @@ import { User } from '../user/model/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permission, Role } from '../role/model/role.entity';
 import { AuthController } from './auth.controller';
-import { MessageGatewayModule } from 'src/messageGateway/message.gateway.module';
+import { MessageGatewayModule } from '../messageGateway/message.gateway.module';
 
 @Module({
   imports: [

@@ -14,7 +14,7 @@ import { SignupUserDto } from '../user/domain/dto/signupUser.dto';
 import { User } from '../user/model/user.entity';
 import { UserService } from '../user/user.service';
 import { ChangePasswordDto } from '../user/domain/dto/changePassword.dto';
-import { MessageStrategy } from 'src/messageGateway/domain/messageStratergy';
+import { MessageStrategy } from '../messageGateway/domain/messageStratergy';
 
 @Injectable()
 export class AuthService {

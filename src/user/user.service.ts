@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './model/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupUserDto } from './domain/dto/signupUser.dto';
+import { MessageStrategy } from '../messageGateway/domain/messageStratergy';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @Inject(MessageStrategy.name)
+    private readonly messageStrategy: MessageStrategy,
   ) {}
 
   async create(createUserDto: SignupUserDto | User): Promise<User> {
@@ -31,7 +34,17 @@ export class UserService {
   }
 
   async update(id: string, updateUserDto: Partial<User>) {
+    const user = await this.userRepository.findOne({ where: { id } });
+
     await this.userRepository.update({ id }, updateUserDto);
-    return await this.userRepository.findOne({ where: { id } });
+
+    if (updateUserDto.balance) {
+      this.messageStrategy.sendMessage({
+        number: user.phone,
+        useCase: 'balanceUpdate',
+      });
+    }
+
+    return user;
   }
 }

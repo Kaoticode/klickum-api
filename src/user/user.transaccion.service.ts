@@ -27,7 +27,18 @@ export class UserTransaccionService {
   ) {
     const query = this.userRepository.getQueryBuilder();
 
-    query.where('user.id != :userId', { userId });
+    query
+      .where('user.id != :userId', { userId })
+      .select([
+        'user.id',
+        'user.isActive',
+        'user.created_at',
+        'user.updated_at',
+        'user.username',
+        'user.phone',
+        'user.email',
+        'user.balance',
+      ]);
 
     if (search) {
       query.andWhere('user.username LIKE :search', {

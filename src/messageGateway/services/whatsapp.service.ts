@@ -86,7 +86,7 @@ export class WhatsappService implements MessageStrategy {
           name || ''
         }, Tu registro se ha completado con éxito. ¡Bienvenido(a)!`;
       case 'successPurchase':
-        return `✔ Tu compra se ha realizado exitosamente. Gracias por tu confianza.`;
+        return `🛒 Tu compra se ha realizado exitosamente. Gracias por tu confianza.`;
       case 'balanceUpdate':
         return `Tu saldo ha sido actualizado correctamente. 👍 `;
       case 'purchaseUpdate':
