@@ -18,6 +18,40 @@ export class WhatsappService implements MessageStrategy {
       `WhatsappService initialized with apiUrl: ${this.apiUrl}, instance: ${this.instance}`,
     );
   }
+  async exists({ number }: MessagePayload): Promise<boolean> {
+    const url = `${this.apiUrl}/chat/whatsappNumbers/${this.instance}`;
+
+    const headers = this.getHeader();
+
+    this.logger.log(
+      JSON.stringify({
+        event: 'exists',
+        message: 'Checking if number exists via WhatsappService',
+        stratergy: WhatsappService.name,
+      }),
+    );
+    const body = {
+      numbers: [number],
+    };
+
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body),
+      });
+      const result = await response.json();
+
+      if (Array.isArray(result) && result.length > 0) {
+        const exists = result[0].exists;
+
+        return exists;
+      }
+    } catch (error) {
+      this.logger.error('Error sending message', JSON.stringify(error));
+      throw error;
+    }
+  }
 
   private getHeader() {
     return {

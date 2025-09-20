@@ -12,6 +12,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permission, Role } from '../role/model/role.entity';
 import { AuthController } from './auth.controller';
 import { MessageGatewayModule } from '../messageGateway/message.gateway.module';
+import { NumberValidationGuard } from './guard/number.validation.guard';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { MessageGatewayModule } from '../messageGateway/message.gateway.module';
     LocalStrategy,
     JwtStrategy,
     RoleService,
+    NumberValidationGuard,
     //UserRepository
   ],
   exports: [AuthService],

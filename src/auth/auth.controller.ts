@@ -19,6 +19,7 @@ import { CreateUserDto } from '../user/domain/dto/createUser.dto';
 import { ChangePasswordDto } from '../user/domain/dto/changePassword.dto';
 import { Action } from '../role/domain/action.enum';
 import { Permissions } from '../common/decorator/permissions.decorator';
+import { NumberValidationGuard } from './guard/number.validation.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -26,6 +27,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(NumberValidationGuard)
   @Post('signup')
   signUp(@Body() signupUserDto: SignupUserDto) {
     return this.authService.signUp(signupUserDto);
