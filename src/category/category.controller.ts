@@ -10,11 +10,12 @@ import {
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './domain/dto/createCategory.dto';
-import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
 import { Permissions } from '../common/decorator/permissions.decorator';
 import { Action } from '../role/domain/action.enum';
+import { PaginatedGeneralReponseDto } from '../common/domain/dto/general.paginatation';
 
 @ApiTags('category')
 @Controller('category')
@@ -32,6 +33,7 @@ export class CategoryController {
   @Get()
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
   async findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,

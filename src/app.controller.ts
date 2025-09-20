@@ -6,6 +6,7 @@ import { Request } from 'express';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  /*
   @Get('img/:folder/:filename')
   getFile(
     @Param('folder') folder: string,
@@ -14,4 +15,5 @@ export class AppController {
   ) {
     return this.appService.getFile(folder, filename, res);
   }
+  */
 }

@@ -1,34 +1,6 @@
 {
   "openapi": "3.0.0",
   "paths": {
-    "/img/{folder}/{filename}": {
-      "get": {
-        "operationId": "AppController_getFile",
-        "parameters": [
-          {
-            "name": "folder",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "filename",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
-          }
-        }
-      }
-    },
     "/user": {
       "get": {
         "operationId": "UserController_paginateAll",
@@ -59,8 +31,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -205,6 +184,28 @@
       "post": {
         "operationId": "AuthController_login",
         "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                },
+                "required": [
+                  "username",
+                  "password"
+                ]
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Login | password and username"
@@ -491,8 +492,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -810,8 +818,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -868,8 +883,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1045,8 +1067,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1098,8 +1127,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1129,8 +1165,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1271,8 +1314,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1378,8 +1428,15 @@
           }
         ],
         "responses": {
-          "200": {
-            "description": ""
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -1450,6 +1507,51 @@
   "servers": [],
   "components": {
     "schemas": {
+      "MetaDataDto": {
+        "type": "object",
+        "properties": {
+          "totalItems": {
+            "type": "number"
+          },
+          "itemCount": {
+            "type": "number"
+          },
+          "itemsPerPage": {
+            "type": "number"
+          },
+          "totalPages": {
+            "type": "number"
+          },
+          "currentPage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "totalItems",
+          "itemCount",
+          "itemsPerPage",
+          "totalPages",
+          "currentPage"
+        ]
+      },
+      "PaginatedGeneralReponseDto": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/MetaDataDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "array"
+            }
+          }
+        },
+        "required": [
+          "meta",
+          "items"
+        ]
+      },
       "UpdateCreateDUserDto": {
         "type": "object",
         "properties": {
@@ -1611,33 +1713,6 @@
         "type": "object",
         "properties": {}
       },
-      "MetaDataDto": {
-        "type": "object",
-        "properties": {
-          "totalItems": {
-            "type": "number"
-          },
-          "itemCount": {
-            "type": "number"
-          },
-          "itemsPerPage": {
-            "type": "number"
-          },
-          "totalPages": {
-            "type": "number"
-          },
-          "currentPage": {
-            "type": "number"
-          }
-        },
-        "required": [
-          "totalItems",
-          "itemCount",
-          "itemsPerPage",
-          "totalPages",
-          "currentPage"
-        ]
-      },
       "ProductMetadataDto": {
         "type": "object",
         "properties": {
@@ -1770,24 +1845,6 @@
           "status"
         ]
       },
-      "CreateCompleteOrderDto": {
-        "type": "object",
-        "properties": {
-          "addressId": {
-            "type": "string"
-          },
-          "items": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          }
-        },
-        "required": [
-          "addressId",
-          "items"
-        ]
-      },
       "CreateItemDto": {
         "type": "object",
         "properties": {
@@ -1801,6 +1858,24 @@
         "required": [
           "productId",
           "amount"
+        ]
+      },
+      "CreateCompleteOrderDto": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CreateItemDto"
+            }
+          }
+        },
+        "required": [
+          "addressId",
+          "items"
         ]
       },
       "ProcessOrderDto": {

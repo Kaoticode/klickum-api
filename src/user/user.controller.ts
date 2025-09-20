@@ -12,7 +12,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { UserTransaccionService } from './user.transaccion.service';
@@ -21,6 +21,7 @@ import { Permissions } from '../common/decorator/permissions.decorator';
 import { Action } from '../role/domain/action.enum';
 import { AddressService } from '../address/address.service';
 import { CreateAddressDto } from '../address/domain/dto/create.address.dto';
+import { PaginatedGeneralReponseDto } from '../common/domain/dto/general.paginatation';
 
 @ApiTags('user')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -35,6 +36,7 @@ export class UserController {
   @Permissions(Action.usersRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
   async paginateAll(
     @Request() req,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
