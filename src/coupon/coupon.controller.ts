@@ -19,7 +19,8 @@ import { Action } from '../role/domain/action.enum';
 import { UseCouponDto } from './domain/dto/useCoupon.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { PaginatedGeneralReponseDto } from '../common/domain/dto/general.paginatation';
 
 @Controller('coupon')
 @ApiTags('coupon')
@@ -37,6 +38,7 @@ export class CouponController {
   @Permissions(Action.raffleRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
   async getAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,

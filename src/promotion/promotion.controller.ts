@@ -9,12 +9,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { PromotionService } from './promotion.service';
-import { ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePromotionDto } from './domain/dto/createPromotion.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
 import { Permissions } from '../common/decorator/permissions.decorator';
 import { Action } from '../role/domain/action.enum';
+import { PaginatedGeneralReponseDto } from '../common/domain/dto/general.paginatation';
 
 @ApiTags('promotion')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -32,6 +33,7 @@ export class PromotionController {
   @Permissions(Action.promotionRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
   async paginateAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,

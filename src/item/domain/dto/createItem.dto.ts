@@ -33,7 +33,7 @@ export class CreateCompleteOrderDto {
   @IsUUID()
   addressId: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: [CreateItemDto] })
   @IsArray()
   @IsNotEmpty()
   @ValidateNested({ each: true })

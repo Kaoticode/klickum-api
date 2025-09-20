@@ -23,11 +23,12 @@ import {
 } from '../item/domain/dto/createItem.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
-import { ApiBody, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProcessOrderDto } from './domain/dto/processOrder.dto';
 import { Permissions } from '../common/decorator/permissions.decorator';
 import { Action } from '../role/domain/action.enum';
 import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
+import { PaginatedGeneralReponseDto } from '../common/domain/dto/general.paginatation';
 
 @ApiTags('order')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -65,6 +66,7 @@ export class OrderController {
   @Get('history')
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
   async getUserOrders(
     @Request() req,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -81,6 +83,7 @@ export class OrderController {
   @Permissions(Action.orderRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
   async getAllOrders(
     @Request() req,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
