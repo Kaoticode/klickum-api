@@ -9,6 +9,7 @@ import { AuthModule } from '../auth/auth.module';
 import { RoleModule } from '../role/role.module';
 import { HashService } from '../common/services/hash.service';
 import { AddressModule } from '../address/address.module';
+import { MessageGatewayModule } from '../messageGateway/message.gateway.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { AddressModule } from '../address/address.module';
     AuthModule,
     RoleModule,
     AddressModule,
+    MessageGatewayModule,
   ],
   providers: [UserService, UserRepository, UserTransaccionService, HashService],
   exports: [UserService, UserTransaccionService],

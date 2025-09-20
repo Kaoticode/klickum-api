@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
 import { ItemService } from '../item/item.service';
 import { CreateOrderItemDto } from './domain/dto/createOrderItem.dto';
@@ -11,6 +11,7 @@ import { ConfigService } from '@nestjs/config';
 import { StatusEnum } from '../status/domain/status.enum';
 import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
 import { CreateCompleteOrderDto } from '../item/domain/dto/createItem.dto';
+import { MessageStrategy } from '../messageGateway/domain/messageStratergy';
 
 @Injectable()
 export class OrderService {
@@ -20,6 +21,8 @@ export class OrderService {
     private userservice: UserTransaccionService,
     private readonly statusService: StatusService,
     private readonly configService: ConfigService,
+    @Inject(MessageStrategy.name)
+    private readonly messageStrategy: MessageStrategy,
   ) {}
 
   async create(userId: string, { addressId, items }: CreateCompleteOrderDto) {
@@ -32,6 +35,10 @@ export class OrderService {
     );
     const orderItems = await this.itemService.createItems(order.id, items);
     await this.orderRepository.setTotalPrice(order, orderItems);
+    await this.messageStrategy.sendMessage({
+      number: user.phone,
+      useCase: 'successPurchase',
+    });
     return order;
   }
 

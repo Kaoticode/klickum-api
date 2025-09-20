@@ -22,6 +22,7 @@ import { TicketModule } from './ticket/ticket.module';
 import { CouponModule } from './coupon/coupon.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AddressModule } from './address/address.module';
+import { MessageGatewayModule } from './messageGateway/message.gateway.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { AddressModule } from './address/address.module';
         configService.get('typeorm'),
       inject: [ConfigService],
     }),
+    MessageGatewayModule,
     CloudinaryModule,
     UserModule,
     AuthModule,

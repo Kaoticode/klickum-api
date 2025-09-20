@@ -11,6 +11,7 @@ import { User } from '../user/model/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Permission, Role } from '../role/model/role.entity';
 import { AuthController } from './auth.controller';
+import { MessageGatewayModule } from '../messageGateway/message.gateway.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { AuthController } from './auth.controller';
       inject: [ConfigService],
     }),
     TypeOrmModule.forFeature([User, Role, Permission]),
+    MessageGatewayModule,
   ],
   providers: [
     AuthService,
