@@ -1670,6 +1670,21 @@
           "name"
         ]
       },
+      "MetadataDto": {
+        "type": "object",
+        "properties": {
+          "size": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "size",
+          "url"
+        ]
+      },
       "CreateProductDto": {
         "type": "object",
         "properties": {
@@ -1697,6 +1712,9 @@
               "physical",
               "digital"
             ]
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataDto"
           }
         },
         "required": [
@@ -1706,7 +1724,8 @@
           "amount",
           "promoted",
           "category",
-          "productType"
+          "productType",
+          "metadata"
         ]
       },
       "UpdateProductDto": {
@@ -1718,10 +1737,18 @@
         "properties": {
           "productType": {
             "type": "string"
+          },
+          "size": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string"
           }
         },
         "required": [
-          "productType"
+          "productType",
+          "size",
+          "url"
         ]
       },
       "ProductStatusDto": {

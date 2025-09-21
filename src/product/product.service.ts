@@ -53,6 +53,8 @@ export class ProductService {
 
     if (createProductDto.productType) {
       metadata.productType = createProductDto.productType;
+      metadata.size = createProductDto.metadata.size || null;
+      metadata.url = createProductDto.metadata.url || null;
     }
 
     return await this.productRepository.save({

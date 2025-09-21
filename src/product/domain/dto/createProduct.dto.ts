@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
   IsBoolean,
   IsIn,
@@ -11,8 +11,26 @@ import {
   MaxLength,
   MinLength,
   NotEquals,
+  ValidateNested,
 } from 'class-validator';
-import { ProductType } from '../product.metadata.interface';
+import {
+  ProductSize,
+  ProductSizeList,
+  ProductType,
+} from '../product.metadata.interface';
+
+export class MetadataDto {
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  @IsIn(ProductSizeList)
+  size?: ProductSize;
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  url?: string;
+}
 
 export class CreateProductDto {
   @ApiProperty()
@@ -57,4 +75,9 @@ export class CreateProductDto {
   @IsString()
   @IsIn(['physical', 'digital'])
   productType: ProductType = 'physical';
+
+  @ApiProperty({ type: MetadataDto })
+  @Type(() => MetadataDto)
+  @ValidateNested()
+  metadata: MetadataDto;
 }

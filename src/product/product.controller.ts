@@ -48,6 +48,7 @@ export class ProductController {
   @Post()
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @Permissions(Action.productCreate)
+  @ApiBody({ type: CreateProductDto })
   async create(@Body() createProductDto: CreateProductDto) {
     return this.productService.create(createProductDto);
   }

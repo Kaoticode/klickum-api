@@ -17,6 +17,16 @@ class ProductMetadataDto {
   @IsString()
   @IsNotEmpty()
   productType: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  size?: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  url?: string;
 }
 
 // Nested DTO for 'status'
