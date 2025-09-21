@@ -6,7 +6,7 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { MessageStrategy } from 'src/messageGateway/domain/messageStratergy';
+import { MessageStrategy } from '../../messageGateway/domain/messageStratergy';
 
 @Injectable()
 export class NumberValidationGuard implements CanActivate {
