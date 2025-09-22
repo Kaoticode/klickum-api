@@ -86,7 +86,7 @@ export class UserController {
   }
 
   @Post('address')
-  @Permissions(Action.usersUpdate)
+  //@Permissions(Action.usersUpdate)
   @ApiBody({ type: CreateAddressDto })
   async createAddress(
     @Request() req,
