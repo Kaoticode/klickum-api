@@ -35,10 +35,6 @@ export class OrderService {
     );
     const orderItems = await this.itemService.createItems(order.id, items);
     await this.orderRepository.setTotalPrice(order, orderItems);
-    await this.messageStrategy.sendMessage({
-      number: user.phone,
-      useCase: 'successPurchase',
-    });
     return order;
   }
 
