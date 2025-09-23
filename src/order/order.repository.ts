@@ -1,4 +1,4 @@
-import { Inject, Injectable, Scope } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Scope } from '@nestjs/common';
 import { Request } from 'express';
 import { BaseRepository } from '../common/services/baseRepository';
 import { DataSource } from 'typeorm';
@@ -6,6 +6,7 @@ import { Order } from './model/order.entity';
 import { REQUEST } from '@nestjs/core';
 import { Item } from '../item/model/item.entity';
 import { Status } from '../status/model/status.entity';
+import { Address } from '../address/model/address.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderRepository extends BaseRepository {
@@ -25,6 +26,14 @@ export class OrderRepository extends BaseRepository {
 
   async createOrder(userId: string, status: Status, addressId: string) {
     const ordersRepository = this.getRepository(Order);
+
+    const address = await this.getRepository(Address).findOne({
+      where: { id: addressId },
+    });
+
+    if (!address) {
+      throw new BadRequestException('Address not found');
+    }
 
     const order = ordersRepository.create({
       user: { id: userId },

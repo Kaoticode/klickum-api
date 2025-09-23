@@ -42,7 +42,6 @@ export class ItemsRepository extends BaseRepository {
         } as Item;
       }),
     );
-    console.log('co;o');
     await this.getRepository(Item).insert(items);
     return items;
   }
