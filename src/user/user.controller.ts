@@ -70,7 +70,6 @@ export class UserController {
   }
 
   @Get('address/find')
-  @Permissions(Action.usersRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
   async getAddress(
