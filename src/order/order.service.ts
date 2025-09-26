@@ -85,7 +85,7 @@ export class OrderService {
 
   async paginateUserOrders(
     userId: string,
-    options: IPaginationOptions,
+    { limit, page }: IPaginationOptions,
   ) /*: Promise<Pagination<Order>> */ {
     const orderRepository = await this.orderRepository.getOrderRepository();
 
@@ -115,12 +115,13 @@ export class OrderService {
       .setParameters({ userId })
       .orderBy('order.created_at', 'DESC');
 
-    return paginate<Order>(orderRepository, options);
+    return paginate<Order>(orderRepository, { limit, page });
   }
 
-  async paginateAllOrders(
-    options: IPaginationOptions,
-  ) /*: Promise<Pagination<Order>> */ {
+  async paginateAllOrders({
+    limit,
+    page,
+  }: IPaginationOptions) /*: Promise<Pagination<Order>> */ {
     const orderRepository = await this.orderRepository.getOrderRepository();
 
     orderRepository
@@ -152,7 +153,7 @@ export class OrderService {
       ])
       .orderBy('order.created_at', 'DESC');
 
-    return paginate<Order>(orderRepository, options);
+    return paginate<Order>(orderRepository, { limit, page });
   }
 
   async findOne(id: string) /*: Promise<Pagination<Order>> */ {
