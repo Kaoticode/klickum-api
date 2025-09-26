@@ -45,7 +45,7 @@
     "decimal.js": "^10.4.3",
     "file-type-mime": "^0.4.3",
     "mongodb": "^5.9.2",
-    "nestjs-typeorm-paginate": "^4.0.4",
+    "nestjs-typeorm-paginate": "^4.1.0",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
