@@ -1914,10 +1914,14 @@
         "properties": {
           "isSent": {
             "type": "boolean"
+          },
+          "status": {
+            "type": "string"
           }
         },
         "required": [
-          "isSent"
+          "isSent",
+          "status"
         ]
       },
       "CreatePromotionDto": {
