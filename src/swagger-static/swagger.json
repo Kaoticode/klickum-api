@@ -774,6 +774,186 @@
         ]
       }
     },
+    "/v2/product": {
+      "post": {
+        "operationId": "ProductV2Controller_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductV2Dto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      },
+      "get": {
+        "operationId": "ProductV2Controller_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "promoted",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
+    "/v2/product/size": {
+      "get": {
+        "operationId": "ProductV2Controller_getSize",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "label": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
+    "/v2/product/{id}": {
+      "patch": {
+        "operationId": "ProductV2Controller_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductV2Dto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
+    "/v2/product/admin": {
+      "get": {
+        "operationId": "ProductV2Controller_adminFindAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "promoted",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
     "/order": {
       "post": {
         "operationId": "OrderController_createOrder",
@@ -1864,6 +2044,131 @@
       "UpdateStatusProductDto": {
         "type": "object",
         "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "ProductVariationDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "sizeId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "amount",
+          "sizeId"
+        ]
+      },
+      "CreateProductV2Dto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "promoted": {
+            "type": "boolean"
+          },
+          "category": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "simple",
+              "variable"
+            ]
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataDto"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariationDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "description",
+          "amount",
+          "promoted",
+          "category",
+          "productType",
+          "group",
+          "metadata",
+          "variants"
+        ]
+      },
+      "UpdateProductV2Dto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "promoted": {
+            "type": "boolean"
+          },
+          "category": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "simple",
+              "variable"
+            ]
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataDto"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariationDto"
+            }
+          },
           "status": {
             "type": "string"
           }

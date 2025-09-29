@@ -10,6 +10,7 @@ import { ProductPropsDto } from '../domain/dto/product.props.dto';
 
 export interface ProductProps {
   categoryId?: string;
+  category: string;
   promoted?: boolean;
 }
 
@@ -19,6 +20,7 @@ export const ProductPropsParams = createParamDecorator(
 
     const queryParams = {
       categoryId: req.query.categoryId,
+      category: req.query.category,
       promoted: req.query.promoted ? req.query.promoted === 'true' : undefined,
     };
 
