@@ -34,7 +34,7 @@ import { UpdateProductCommand } from './command/update.product.handler';
 import {
   ProductProps,
   ProductPropsParams,
-} from 'src/common/decorator/product.props.query';
+} from '../common/decorator/product.props.query';
 import { GetAllPublicProductQuery } from './query/get.public.prouct.query';
 import { GetAllAdminProductQuery } from './query/get.admin.product.query';
 
