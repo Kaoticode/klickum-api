@@ -69,8 +69,18 @@ export class OrderService {
       throw new BadRequestException('No data to update');
     }
 
-    const { isSent } = updateOrderDto;
-    await this.orderRepository.update(id, { isSent });
+    let data: Partial<Order> = {};
+
+    if (updateOrderDto.status) {
+      const status = await this.statusService.findOne(updateOrderDto.status);
+      data = { ...data, status };
+    }
+
+    if (updateOrderDto.isSent !== undefined) {
+      data = { ...data, isSent: updateOrderDto.isSent };
+    }
+
+    await this.orderRepository.update(id, data);
   }
 
   async cancellOrder(orderId: string) {

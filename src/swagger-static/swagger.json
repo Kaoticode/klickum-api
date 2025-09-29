@@ -774,6 +774,200 @@
         ]
       }
     },
+    "/v2/product": {
+      "post": {
+        "operationId": "ProductV2Controller_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProductV2Dto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      },
+      "get": {
+        "operationId": "ProductV2Controller_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "promoted",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductV2ReponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
+    "/v2/product/size": {
+      "get": {
+        "operationId": "ProductV2Controller_getSize",
+        "parameters": [],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "label": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
+    "/v2/product/{id}": {
+      "patch": {
+        "operationId": "ProductV2Controller_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProductV2Dto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
+    "/v2/product/admin": {
+      "get": {
+        "operationId": "ProductV2Controller_adminFindAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "promoted",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "category",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedProductV2ReponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
     "/order": {
       "post": {
         "operationId": "OrderController_createOrder",
@@ -1872,6 +2066,264 @@
           "status"
         ]
       },
+      "ProductVariationDto": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "sizeId": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "amount",
+          "sizeId"
+        ]
+      },
+      "CreateProductV2Dto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "promoted": {
+            "type": "boolean"
+          },
+          "category": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "simple",
+              "variable"
+            ]
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataDto"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariationDto"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "price",
+          "description",
+          "amount",
+          "promoted",
+          "category",
+          "productType",
+          "group",
+          "metadata",
+          "variants"
+        ]
+      },
+      "UpdateProductV2Dto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "promoted": {
+            "type": "boolean"
+          },
+          "category": {
+            "type": "string"
+          },
+          "productType": {
+            "type": "string",
+            "enum": [
+              "physical",
+              "digital"
+            ]
+          },
+          "group": {
+            "type": "string",
+            "enum": [
+              "simple",
+              "variable"
+            ]
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/MetadataDto"
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductVariationDto"
+            }
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "SizeDto": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "label"
+        ]
+      },
+      "ProducVariantDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "sku": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "size": {
+            "$ref": "#/components/schemas/SizeDto"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "sku",
+          "amount",
+          "size",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "ProductReponseV2Dto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "price": {
+            "type": "string"
+          },
+          "promoted": {
+            "type": "boolean"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/ProductMetadataDto"
+          },
+          "group": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ProductStatusDto"
+          },
+          "category": {
+            "$ref": "#/components/schemas/ProductCategoryDto"
+          },
+          "images": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "variants": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProducVariantDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "isActive",
+          "created_at",
+          "updated_at",
+          "name",
+          "description",
+          "amount",
+          "price",
+          "promoted",
+          "metadata",
+          "group",
+          "status",
+          "category",
+          "images",
+          "variants"
+        ]
+      },
+      "PaginatedProductV2ReponseDto": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "$ref": "#/components/schemas/MetaDataDto"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProductReponseV2Dto"
+            }
+          }
+        },
+        "required": [
+          "meta",
+          "items"
+        ]
+      },
       "CreateItemDto": {
         "type": "object",
         "properties": {
@@ -1914,10 +2366,14 @@
         "properties": {
           "isSent": {
             "type": "boolean"
+          },
+          "status": {
+            "type": "string"
           }
         },
         "required": [
-          "isSent"
+          "isSent",
+          "status"
         ]
       },
       "CreatePromotionDto": {

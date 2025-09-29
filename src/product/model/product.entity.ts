@@ -11,7 +11,11 @@ import {
 } from 'typeorm';
 import { Status } from '../../status/model/status.entity';
 import { Image } from '../../common/model/image.entity';
-import { ProductMetadata } from '../domain/product.metadata.interface';
+import {
+  ProductGroup,
+  ProductMetadata,
+} from '../domain/product.metadata.interface';
+import { ProductVariant } from './productVariant.entity';
 
 @Entity()
 export class Product extends BaseEntity {
@@ -29,6 +33,9 @@ export class Product extends BaseEntity {
 
   @Column({ default: false })
   promoted: boolean;
+
+  @Column({ nullable: true })
+  group?: ProductGroup;
 
   @ManyToMany(() => Image, { cascade: true })
   @JoinTable({
@@ -50,4 +57,9 @@ export class Product extends BaseEntity {
     nullable: true,
   })
   metadata: ProductMetadata;
+
+  @OneToMany(() => ProductVariant, (variant) => variant.product, {
+    cascade: true,
+  })
+  variants: ProductVariant[];
 }
