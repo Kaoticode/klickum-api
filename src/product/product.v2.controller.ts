@@ -37,6 +37,7 @@ import {
 } from '../common/decorator/product.props.query';
 import { GetAllPublicProductQuery } from './query/get.public.prouct.query';
 import { GetAllAdminProductQuery } from './query/get.admin.product.query';
+import { PaginatedProductV2ReponseDto } from './domain/docs/product.v2.reponse.dto';
 
 @ApiTags('v2/product')
 @Controller('v2/product')
@@ -84,7 +85,7 @@ export class ProductV2Controller {
   @ApiQuery({ name: 'limit', type: Number, required: false })
   @ApiQuery({ name: 'category', type: String, required: false })
   @ApiQuery({ name: 'promoted', type: Number, required: false })
-  //@ApiResponse({ type: PaginatedProductReponseDto, status: 200 })
+  @ApiResponse({ type: PaginatedProductV2ReponseDto, status: 200 })
   async findAll(
     @ProductPropsParams() productProps: ProductProps,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
@@ -103,7 +104,7 @@ export class ProductV2Controller {
   @ApiQuery({ name: 'limit', type: Number, required: false })
   @ApiQuery({ name: 'category', type: String, required: false })
   @ApiQuery({ name: 'promoted', type: Number, required: false })
-  //@ApiResponse({ type: PaginatedProductReponseDto, status: 200 })
+  @ApiResponse({ type: PaginatedProductV2ReponseDto, status: 200 })
   async adminFindAll(
     @ProductPropsParams() productProps: ProductProps,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
