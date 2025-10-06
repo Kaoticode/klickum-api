@@ -36,3 +36,9 @@ jobs:
         run: npm run migration:sync
       - name: 'Run migrations'
         run: npm run migration:run
+
+      - name: Upload JSON Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: swagger-doc
+          path: ./src/swagger-static/swagger.json

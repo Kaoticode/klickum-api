@@ -30,13 +30,13 @@ export class GetAllAdminProductHandler
       .leftJoinAndSelect('variants.size', 'size');
 
     if (productProps.category) {
-      query.where('category.name = :category', {
+      query.andWhere('category.name = :category', {
         category: productProps.category,
       });
     }
 
     if (productProps.promoted !== undefined) {
-      query.where('product.promoted = :promoted', {
+      query.andWhere('product.promoted = :promoted', {
         promoted: productProps.promoted,
       });
     }
