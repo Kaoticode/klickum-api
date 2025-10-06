@@ -27,16 +27,18 @@ export class GetAllPublicProductHandler
       .leftJoinAndSelect('product.category', 'category')
       .leftJoinAndSelect('product.images', 'image')
       .leftJoinAndSelect('product.variants', 'variants')
-      .leftJoinAndSelect('variants.size', 'size');
+      .leftJoinAndSelect('variants.size', 'size')
+      .where('status.name <> :status', { status: 'discontinued' })
+      .andWhere('product.isActive = :isActive', { isActive: true })
 
     if (productProps.category) {
-      query.where('category.name = :category', {
+      query.andWhere('category.name = :category', {
         category: productProps.category,
       });
     }
 
     if (productProps.promoted !== undefined) {
-      query.where('product.promoted = :promoted', {
+      query.andWhere('product.promoted = :promoted', {
         promoted: productProps.promoted,
       });
     }
@@ -44,8 +46,6 @@ export class GetAllPublicProductHandler
     console.log('ProductProps:', productProps);
 
     query
-      .andWhere('status.name <> :status', { status: 'discontinued' })
-      .andWhere('product.isActive = :isActive', { isActive: true })
       .select([
         'product',
         'status.name',

@@ -99,6 +99,7 @@ export class ProductV2Controller {
   }
 
   @Get('admin')
+  @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @Permissions(Action.productRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
