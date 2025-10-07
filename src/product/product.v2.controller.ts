@@ -49,6 +49,11 @@ export class ProductV2Controller {
     private readonly queryBus: QueryBus,
   ) {}
 
+  @Get('/:id/admin/')
+  async getAdminOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.queryBus.execute(new GetAdminOneProductQuery(id));
+  }
+
   @Post()
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @Permissions(Action.productCreate)
@@ -82,7 +87,7 @@ export class ProductV2Controller {
     );
   }
 
-  @Get(':id')
+  @Get(':id/public/')
   async getOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.queryBus.execute(new GetOneProductQuery(id));
   }
@@ -105,7 +110,7 @@ export class ProductV2Controller {
     );
   }
 
-  @Get('admin')
+  @Get('/admin/')
   @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @Permissions(Action.productRead)
   @ApiQuery({ name: 'page', type: Number, required: false })
@@ -122,10 +127,5 @@ export class ProductV2Controller {
     return this.queryBus.execute(
       new GetAllAdminProductQuery({ page, limit }, productProps),
     );
-  }
-
-  @Get('/admin/:id')
-  async getAdminOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.queryBus.execute(new GetAdminOneProductQuery(id));
   }
 }
