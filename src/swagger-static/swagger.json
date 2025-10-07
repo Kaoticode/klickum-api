@@ -774,6 +774,29 @@
         ]
       }
     },
+    "/v2/product/{id}/admin": {
+      "get": {
+        "operationId": "ProductV2Controller_getAdminOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
     "/v2/product": {
       "post": {
         "operationId": "ProductV2Controller_create",
@@ -912,7 +935,9 @@
         "tags": [
           "v2/product"
         ]
-      },
+      }
+    },
+    "/v2/product/{id}/public": {
       "get": {
         "operationId": "ProductV2Controller_getOne",
         "parameters": [
@@ -982,29 +1007,6 @@
                 }
               }
             }
-          }
-        },
-        "tags": [
-          "v2/product"
-        ]
-      }
-    },
-    "/v2/product/admin/{id}": {
-      "get": {
-        "operationId": "ProductV2Controller_getAdminOne",
-        "parameters": [
-          {
-            "name": "id",
-            "required": true,
-            "in": "path",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": ""
           }
         },
         "tags": [
