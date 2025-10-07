@@ -912,6 +912,27 @@
         "tags": [
           "v2/product"
         ]
+      },
+      "get": {
+        "operationId": "ProductV2Controller_getOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
       }
     },
     "/v2/product/admin": {
@@ -961,6 +982,29 @@
                 }
               }
             }
+          }
+        },
+        "tags": [
+          "v2/product"
+        ]
+      }
+    },
+    "/v2/product/admin/{id}": {
+      "get": {
+        "operationId": "ProductV2Controller_getAdminOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
           }
         },
         "tags": [
