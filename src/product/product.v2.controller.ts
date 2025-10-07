@@ -38,6 +38,8 @@ import {
 import { GetAllPublicProductQuery } from './query/get.public.prouct.query';
 import { GetAllAdminProductQuery } from './query/get.admin.product.query';
 import { PaginatedProductV2ReponseDto } from './domain/docs/product.v2.reponse.dto';
+import { GetOneProductQuery } from './query/get.one.product.query';
+import { GetAdminOneProductQuery } from './query/get.admin.one.product.query';
 
 @ApiTags('v2/product')
 @Controller('v2/product')
@@ -80,6 +82,11 @@ export class ProductV2Controller {
     );
   }
 
+  @Get(':id')
+  async getOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.queryBus.execute(new GetOneProductQuery(id));
+  }
+
   @Get()
   @ApiQuery({ name: 'page', type: Number, required: false })
   @ApiQuery({ name: 'limit', type: Number, required: false })
@@ -115,5 +122,10 @@ export class ProductV2Controller {
     return this.queryBus.execute(
       new GetAllAdminProductQuery({ page, limit }, productProps),
     );
+  }
+
+  @Get('/admin/:id')
+  async getAdminOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.queryBus.execute(new GetAdminOneProductQuery(id));
   }
 }

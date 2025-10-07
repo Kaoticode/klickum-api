@@ -96,6 +96,7 @@ export class AuthController {
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, AuthorizationGuard)
   @Permissions(Action.usersCreate)
   @Post('create')
   async createAuth(@Body() createUserdto: CreateUserDto) {

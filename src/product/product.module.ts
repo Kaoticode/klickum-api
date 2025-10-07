@@ -21,6 +21,8 @@ import { GetAllSizesHandler } from './query/get.size.query';
 import { UpdateProductHandler } from './command/update.product.handler';
 import { GetAllPublicProductHandler } from './query/get.public.prouct.query';
 import { GetAllAdminProductHandler } from './query/get.admin.product.query';
+import { GetOneProductHandler } from './query/get.one.product.query';
+import { GetAdminOneProductHandler } from './query/get.admin.one.product.query';
 
 @Module({
   imports: [
@@ -41,6 +43,8 @@ import { GetAllAdminProductHandler } from './query/get.admin.product.query';
     UpdateProductHandler,
     GetAllPublicProductHandler,
     GetAllAdminProductHandler,
+    GetOneProductHandler,
+    GetAdminOneProductHandler,
   ],
   controllers: [ProductController, ProductV2Controller],
 })
