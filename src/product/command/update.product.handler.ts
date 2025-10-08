@@ -30,11 +30,14 @@ export class UpdateProductHandler
 
   async execute({ id, dto }: UpdateProductCommand) {
     this.logger.log('UpdateProductCommand', JSON.stringify(dto));
-    const { category, productType, status } = dto;
+    const { category, productType, status, name } = dto;
     try {
       const product = await this.productRepo.findOne({
         where: { id },
       });
+
+      await this.variadation(dto);
+
 
       if (!product) throw new BadRequestException('Product not found');
 
@@ -74,10 +77,10 @@ export class UpdateProductHandler
     }
   }
 
-  private async variadation(dto: UpdateProductV2Dto) {
-    if (Object.keys(dto).length === 0) {
-      this.logger.error('No data to update');
-      return;
-    }
+  private async variadation({ name }: UpdateProductV2Dto) {
+    const exist = await this.productRepo.findOne({
+      where: { name },
+    });
+    if (exist) throw new BadRequestException('Product already exists');
   }
 }
