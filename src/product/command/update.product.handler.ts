@@ -1,12 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreateProductV2Dto } from '../domain/dto/create.product.v2.dto';
 import { BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../model/product.entity';
 import { Repository } from 'typeorm';
 import { StatusService } from '../../status/status.service';
 import { CategoryService } from '../../category/category.service';
-import { ProductMetadata } from '../domain/product.metadata.interface';
 import { UpdateProductV2Dto } from '../domain/dto/update.product.v2.dto';
 
 export class UpdateProductCommand {
@@ -38,7 +36,6 @@ export class UpdateProductHandler
 
       await this.variadation(dto);
 
-
       if (!product) throw new BadRequestException('Product not found');
 
       const dataToUpdate: Partial<Product> = {};
@@ -68,6 +65,10 @@ export class UpdateProductHandler
 
       if (dto.price !== undefined) {
         dataToUpdate.price = dto.price;
+      }
+
+      if (dto.name !== undefined) {
+        dataToUpdate.name = dto.name;
       }
 
       await this.productRepo.update(id, dataToUpdate);

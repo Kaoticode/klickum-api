@@ -41,4 +41,12 @@ export class VariantService {
       totalAmount,
     };
   }
+
+  async generateSimple(productName: string) {
+    const variant = this.productRepository.create({
+      amount: 1,
+      sku: generateSKU(productName),
+    });
+    return variant;
+  }
 }

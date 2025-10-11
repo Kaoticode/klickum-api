@@ -29,7 +29,7 @@ export class GetAllPublicProductHandler
       .leftJoinAndSelect('product.variants', 'variants')
       .leftJoinAndSelect('variants.size', 'size')
       .where('status.name <> :status', { status: 'discontinued' })
-      .andWhere('product.isActive = :isActive', { isActive: true })
+      .andWhere('product.isActive = :isActive', { isActive: true });
 
     if (productProps.category) {
       query.andWhere('category.name = :category', {
@@ -45,17 +45,19 @@ export class GetAllPublicProductHandler
 
     console.log('ProductProps:', productProps);
 
-    query
-      .select([
-        'product',
-        'status.name',
-        'category.id',
-        'category.name',
-        'image.url',
-        'variants',
-        'size.label',
-      ]);
+    query.select([
+      'product',
+      'status.name',
+      'category.id',
+      'category.name',
+      'image.url',
+      'variants',
+      'size.label',
+    ]);
 
-    return paginate<Product>(query, options);
+    return paginate<Product>(query, {
+      page: options.page,
+      limit: options.limit,
+    });
   }
 }
