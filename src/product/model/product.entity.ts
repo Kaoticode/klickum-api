@@ -1,4 +1,3 @@
-import { Item } from '../../item/model/item.entity';
 import { Category } from '../../category/model/category.entity';
 import { BaseEntity } from '../../common/model/base.entity';
 import {
@@ -48,8 +47,8 @@ export class Product extends BaseEntity {
   @ManyToOne(() => Category, { eager: true })
   category: Category;
 
-  @OneToMany((type) => Item, (item) => item.product)
-  items: Promise<Item[]>;
+  //@OneToMany((type) => Item, (item) => item.product)
+  //items: Promise<Item[]>;
 
   @Column({
     type: 'jsonb',

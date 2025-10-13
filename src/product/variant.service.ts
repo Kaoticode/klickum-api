@@ -49,4 +49,25 @@ export class VariantService {
     });
     return variant;
   }
+
+  async requireFromStock(productVariantId: number, amount: number) {
+    const variant = await this.productRepository.findOne({
+      where: {
+        id: productVariantId,
+        product: { status: { name: 'available' } },
+      },
+      relations: ['product'],
+    });
+    if (!variant) {
+      throw new BadRequestException(
+        'Variant not found, id: ' + productVariantId,
+      );
+    }
+    if (variant.amount < amount) {
+      throw new BadRequestException(
+        `Not enough stock for variant ${variant.id}`,
+      );
+    }
+    return variant;
+  }
 }

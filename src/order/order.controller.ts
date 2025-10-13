@@ -17,10 +17,6 @@ import {
 } from '@nestjs/common';
 import { TransactionInterceptor } from '../common/services/transaction.interceptor';
 import { OrderService } from './order.service';
-import {
-  CreateCompleteOrderDto,
-  CreateItemDto,
-} from '../item/domain/dto/createItem.dto';
 import { JwtAuthGuard } from '../auth/guard/jwt.guard';
 import { AuthorizationGuard } from '../auth/guard/authorization.guard';
 import { ApiBody, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -34,6 +30,7 @@ import { PaginatedGeneralReponseDto } from '../common/domain/dto/general.paginat
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
 @Controller('order')
 export class OrderController {
+  /*
   constructor(private orderService: OrderService) {}
 
   @Post()
@@ -125,4 +122,5 @@ export class OrderController {
   ) {
     return this.orderService.update(id, updateOrderDto);
   }
+    */
 }

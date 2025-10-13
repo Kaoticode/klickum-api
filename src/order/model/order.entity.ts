@@ -1,9 +1,9 @@
 import { User } from '../../user/model/user.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../common/model/base.entity';
-import { Item } from '../../item/model/item.entity';
 import { Status } from '../../status/model/status.entity';
 import { Address } from '../../address/model/address.entity';
+import { Item } from './item.entity';
 
 @Entity()
 export class Order extends BaseEntity {
@@ -26,7 +26,7 @@ export class Order extends BaseEntity {
   isSent: boolean;
 
   @OneToMany((type) => Item, (item) => item.order)
-  items: Promise<Item[]>;
+  items: Item[];
 
   @ManyToOne(() => Address, { nullable: true })
   address: Address;

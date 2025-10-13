@@ -1,6 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { OrderRepository } from './order.repository';
-import { ItemService } from '../item/item.service';
+//import { ItemService } from '../item/item.service';
 import { CreateOrderItemDto } from './domain/dto/createOrderItem.dto';
 import { UserTransaccionService } from '../user/user.transaccion.service';
 import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
@@ -10,11 +10,12 @@ import { ProcessOrderDto } from './domain/dto/processOrder.dto';
 import { ConfigService } from '@nestjs/config';
 import { StatusEnum } from '../status/domain/status.enum';
 import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
-import { CreateCompleteOrderDto } from '../item/domain/dto/createItem.dto';
+//import { CreateCompleteOrderDto } from '../item/domain/dto/createItem.dto';
 import { MessageStrategy } from '../messageGateway/domain/messageStratergy';
 
 @Injectable()
 export class OrderService {
+  /*
   constructor(
     private orderRepository: OrderRepository,
     private itemService: ItemService,
@@ -96,7 +97,7 @@ export class OrderService {
   async paginateUserOrders(
     userId: string,
     { limit, page }: IPaginationOptions,
-  ) /*: Promise<Pagination<Order>> */ {
+  )  {
     const orderRepository = await this.orderRepository.getOrderRepository();
 
     orderRepository
@@ -131,7 +132,7 @@ export class OrderService {
   async paginateAllOrders({
     limit,
     page,
-  }: IPaginationOptions) /*: Promise<Pagination<Order>> */ {
+  }: IPaginationOptions) {
     const orderRepository = await this.orderRepository.getOrderRepository();
 
     orderRepository
@@ -166,7 +167,7 @@ export class OrderService {
     return paginate<Order>(orderRepository, { limit, page });
   }
 
-  async findOne(id: string) /*: Promise<Pagination<Order>> */ {
+  async findOne(id: string)  {
     const order = await this.orderRepository.findOne(id);
 
     if (!order) throw new BadRequestException('order not found');
@@ -190,4 +191,5 @@ export class OrderService {
 
     return order;
   }
+  */
 }

@@ -12,7 +12,6 @@ import { CategoryModule } from './category/category.module';
 import { CommonModule } from './common/common.module';
 import { ProductModule } from './product/product.module';
 import { RoleModule } from './role/role.module';
-import { ItemModule } from './item/item.module';
 import typeorm from './config/typeorm';
 import { OrderModule } from './order/order.module';
 import { StatusModule } from './status/status.module';
@@ -23,6 +22,7 @@ import { CouponModule } from './coupon/coupon.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { AddressModule } from './address/address.module';
 import { MessageGatewayModule } from './messageGateway/message.gateway.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -43,7 +43,7 @@ import { MessageGatewayModule } from './messageGateway/message.gateway.module';
     CommonModule,
     ProductModule,
     RoleModule,
-    ItemModule,
+    //ItemModule,
     OrderModule,
     StatusModule,
     PromotionModule,
@@ -51,6 +51,7 @@ import { MessageGatewayModule } from './messageGateway/message.gateway.module';
     TicketModule,
     CouponModule,
     AddressModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

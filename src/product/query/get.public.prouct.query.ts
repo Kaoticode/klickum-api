@@ -28,8 +28,8 @@ export class GetAllPublicProductHandler
       .leftJoinAndSelect('product.images', 'image')
       .leftJoinAndSelect('product.variants', 'variants')
       .leftJoinAndSelect('variants.size', 'size')
-      .where('status.name <> :status', { status: 'discontinued' })
-      .andWhere('product.isActive = :isActive', { isActive: true });
+      .where('status.name <> :status', { status: 'discontinued' });
+    //.andWhere('product.isActive = :isActive', { isActive: true });
 
     if (productProps.category) {
       query.andWhere('category.name = :category', {
@@ -42,8 +42,6 @@ export class GetAllPublicProductHandler
         promoted: productProps.promoted,
       });
     }
-
-    console.log('ProductProps:', productProps);
 
     query.select([
       'product',
