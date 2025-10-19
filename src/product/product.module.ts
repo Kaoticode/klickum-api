@@ -46,6 +46,7 @@ import { GetAdminOneProductHandler } from './query/get.admin.one.product.query';
     GetOneProductHandler,
     GetAdminOneProductHandler,
   ],
+  exports: [ProductService, VariantService],
   controllers: [ProductController, ProductV2Controller],
 })
 export class ProductModule {}

@@ -4,12 +4,13 @@ import { BaseRepository } from '../common/services/baseRepository';
 import { DataSource } from 'typeorm';
 import { Order } from './model/order.entity';
 import { REQUEST } from '@nestjs/core';
-import { Item } from '../item/model/item.entity';
+//import { Item } from '../item/model/item.entity';
 import { Status } from '../status/model/status.entity';
 import { Address } from '../address/model/address.entity';
 
 @Injectable({ scope: Scope.REQUEST })
 export class OrderRepository extends BaseRepository {
+  /*
   constructor(dataSource: DataSource, @Inject(REQUEST) req: Request) {
     super(dataSource, req);
   }
@@ -44,25 +45,25 @@ export class OrderRepository extends BaseRepository {
 
     return order;
   }
-
+  */
+  /*
   async setTotalPrice(order: Order, items: Item[]) {
-    /*
     const total_unit_price = items.map((item) => {
       return item.product.price * item.amount;
     });
     const totalPrice = total_unit_price.reduce((a, b) => a + b, 0);
-     */
     const totalPrice = this.getTotalPrice(items);
     await this.getRepository(Order).update({ id: order.id }, { totalPrice });
   }
-
+  
   getTotalPrice(items: Item[]) {
     const total_unit_price = items.map((item) => {
       return item.product.price * item.amount;
     });
     return total_unit_price.reduce((a, b) => a + b, 0);
   }
-
+  */
+  /*
   async getOrderRepository() {
     return this.getRepository(Order).createQueryBuilder('order');
   }
@@ -115,4 +116,5 @@ export class OrderRepository extends BaseRepository {
     await this.getRepository(Order).update({ id }, updateOrderDto);
     return await this.findOne(id);
   }
+  */
 }

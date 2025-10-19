@@ -62,8 +62,13 @@ export class CreateProductkHandler
         );
         product.variants = variants;
         product.amount = totalAmount;
+      } else {
+        const simpleVariant = await this.variantService.generateSimple(
+          dto.name,
+        );
+        simpleVariant.amount = dto.amount;
+        product.variants = [simpleVariant];
       }
-
       return this.productRepo.save(product);
     } catch (error) {
       this.logger.error('error creating product', JSON.stringify(error));

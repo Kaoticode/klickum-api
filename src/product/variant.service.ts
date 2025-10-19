@@ -41,4 +41,33 @@ export class VariantService {
       totalAmount,
     };
   }
+
+  async generateSimple(productName: string) {
+    const variant = this.productRepository.create({
+      amount: 1,
+      sku: generateSKU(productName),
+    });
+    return variant;
+  }
+
+  async requireFromStock(productVariantId: number, amount: number) {
+    const variant = await this.productRepository.findOne({
+      where: {
+        id: productVariantId,
+        product: { status: { name: 'available' } },
+      },
+      relations: ['product'],
+    });
+    if (!variant) {
+      throw new BadRequestException(
+        'Variant not found, id: ' + productVariantId,
+      );
+    }
+    if (variant.amount < amount) {
+      throw new BadRequestException(
+        `Not enough stock for variant ${variant.sku}`,
+      );
+    }
+    return variant;
+  }
 }

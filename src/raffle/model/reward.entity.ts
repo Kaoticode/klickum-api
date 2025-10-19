@@ -9,7 +9,7 @@ export class Reward {
   @PrimaryColumn()
   raffleId: string;
 
-  @ManyToOne(() => Product, (product) => product.items)
+  @ManyToOne(() => Product /*(product) => product.items */)
   @JoinColumn({ name: 'productId' })
   product: Product;
   @ManyToOne(() => Raffle, (raffle) => raffle.rewards)

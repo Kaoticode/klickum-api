@@ -27,8 +27,8 @@ export class ProductVariant {
   @Column()
   amount: number;
 
-  @ManyToOne(() => Size)
-  size: Size;
+  @ManyToOne(() => Size, { nullable: true })
+  size?: Size;
 
   @ManyToOne(() => Color, { nullable: true })
   color?: Color;

@@ -10,13 +10,12 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-export class CreateItemDto {
+export class ItemsToProcessDto {
   @ApiProperty()
-  @Transform(({ value }): string => (value as string).trim())
-  @IsString()
+  @IsInt()
   @IsNotEmpty()
-  @IsUUID()
-  productId: string;
+  @NotEquals(0)
+  productVariantId: number;
 
   @ApiProperty()
   @IsNotEmpty()
@@ -25,7 +24,7 @@ export class CreateItemDto {
   amount: number;
 }
 
-export class CreateCompleteOrderDto {
+export class CreateDirectOrderDto {
   @ApiProperty()
   @Transform(({ value }): string => (value as string).trim())
   @IsString()
@@ -33,10 +32,10 @@ export class CreateCompleteOrderDto {
   @IsUUID()
   addressId: string;
 
-  @ApiProperty({ type: [CreateItemDto] })
+  @ApiProperty({ type: [ItemsToProcessDto] })
   @IsArray()
   @IsNotEmpty()
   @ValidateNested({ each: true })
-  @Type(() => CreateItemDto)
-  items: CreateItemDto[];
+  @Type(() => ItemsToProcessDto)
+  items: ItemsToProcessDto[];
 }

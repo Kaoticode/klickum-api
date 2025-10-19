@@ -1,6 +1,6 @@
 export function generateSKU(
   productName: string,
-  size: string,
+  size?: string,
   //color: string,
 ): string {
   const productCode = productName
@@ -9,7 +9,7 @@ export function generateSKU(
     .toUpperCase(); // Capitalize
 
   //const colorCode = color.substring(0, 3).toUpperCase();
-  const sizeCode = size.toUpperCase();
+  const sizeCode = size ? size.toUpperCase() : 'SIMPLE';
 
   const randomNumber = Math.floor(Math.random() * 1000);
 

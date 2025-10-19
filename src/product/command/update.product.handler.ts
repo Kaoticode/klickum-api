@@ -1,12 +1,10 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreateProductV2Dto } from '../domain/dto/create.product.v2.dto';
 import { BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from '../model/product.entity';
 import { Repository } from 'typeorm';
 import { StatusService } from '../../status/status.service';
 import { CategoryService } from '../../category/category.service';
-import { ProductMetadata } from '../domain/product.metadata.interface';
 import { UpdateProductV2Dto } from '../domain/dto/update.product.v2.dto';
 
 export class UpdateProductCommand {
@@ -30,11 +28,13 @@ export class UpdateProductHandler
 
   async execute({ id, dto }: UpdateProductCommand) {
     this.logger.log('UpdateProductCommand', JSON.stringify(dto));
-    const { category, productType, status } = dto;
+    const { category, productType, status, name } = dto;
     try {
       const product = await this.productRepo.findOne({
         where: { id },
       });
+
+      await this.variadation(dto);
 
       if (!product) throw new BadRequestException('Product not found');
 
@@ -67,6 +67,10 @@ export class UpdateProductHandler
         dataToUpdate.price = dto.price;
       }
 
+      if (dto.name !== undefined) {
+        dataToUpdate.name = dto.name;
+      }
+
       await this.productRepo.update(id, dataToUpdate);
     } catch (error) {
       this.logger.error('error creating product', JSON.stringify(error));
@@ -74,10 +78,10 @@ export class UpdateProductHandler
     }
   }
 
-  private async variadation(dto: UpdateProductV2Dto) {
-    if (Object.keys(dto).length === 0) {
-      this.logger.error('No data to update');
-      return;
-    }
+  private async variadation({ name }: UpdateProductV2Dto) {
+    const exist = await this.productRepo.findOne({
+      where: { name },
+    });
+    if (exist) throw new BadRequestException('Product already exists');
   }
 }

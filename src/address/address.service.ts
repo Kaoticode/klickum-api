@@ -101,4 +101,12 @@ export class AddressService {
 
     return paginate<Address>(queryBuilder, options);
   }
+
+  async findOne(id: string) {
+    const address = await this.addressRepository.findOne({ where: { id } });
+
+    if (!address) throw new BadRequestException('Address not found');
+
+    return address;
+  }
 }
