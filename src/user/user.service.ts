@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from './model/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SignupUserDto } from './domain/dto/signupUser.dto';
@@ -50,8 +50,18 @@ export class UserService {
 
   async validateUserBalanceToFuturePurchase(userId: string, amount: number) {
     const user = await this.findOneById(userId);
-    if (user.balance < amount) {
+    if (Number(user.balance) < Number(amount)) {
       throw new BadRequestException('Not enough balance. required: ' + amount);
     }
+    return user;
+  }
+
+  async updateUserBalanceTransaction(
+    user: User,
+    valueToCharge: number,
+    manager: EntityManager,
+  ) {
+    user.balance -= valueToCharge;
+    await manager.save(User, user);
   }
 }

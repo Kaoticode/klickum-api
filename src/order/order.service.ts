@@ -1,30 +1,29 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import { OrderRepository } from './order.repository';
-//import { ItemService } from '../item/item.service';
-import { CreateOrderItemDto } from './domain/dto/createOrderItem.dto';
-import { UserTransaccionService } from '../user/user.transaccion.service';
-import { IPaginationOptions, paginate } from 'nestjs-typeorm-paginate';
 import { Order } from './model/order.entity';
 import { StatusService } from '../status/status.service';
-import { ProcessOrderDto } from './domain/dto/processOrder.dto';
 import { ConfigService } from '@nestjs/config';
-import { StatusEnum } from '../status/domain/status.enum';
-import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
-//import { CreateCompleteOrderDto } from '../item/domain/dto/createItem.dto';
 import { MessageStrategy } from '../messageGateway/domain/messageStratergy';
+import { User } from '../user/model/user.entity';
+import { Item } from './model/item.entity';
+import { ProductVariant } from '../product/model/productVariant.entity';
+import { EntityManager, Repository } from 'typeorm';
+import { Address } from '../address/model/address.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { VariantService } from '../product/variant.service';
+import { ItemsToProcessDto } from './domain/dto/create.direct.order';
 
 @Injectable()
 export class OrderService {
-  /*
   constructor(
-    private orderRepository: OrderRepository,
-    private itemService: ItemService,
-    private userservice: UserTransaccionService,
     private readonly statusService: StatusService,
     private readonly configService: ConfigService,
     @Inject(MessageStrategy.name)
     private readonly messageStrategy: MessageStrategy,
+    @InjectRepository(Address)
+    private readonly addressRepo: Repository<Address>,
+    private readonly variantService: VariantService,
   ) {}
+  /*
 
   async create(userId: string, { addressId, items }: CreateCompleteOrderDto) {
     const user = await this.userservice.getUser(userId);
@@ -192,4 +191,71 @@ export class OrderService {
     return order;
   }
   */
+
+  async saveOrderAndItems(
+    order: Order,
+    totalPrice: number,
+    items: Item[],
+    variants: ProductVariant[],
+    manager: EntityManager,
+  ) {
+    order.totalPrice = totalPrice;
+
+    await manager.save(Order, order);
+    await manager.save(Item, items);
+    await manager.save(ProductVariant, variants);
+  }
+
+  async createInitOrderTransactional(
+    user: User,
+    addressId: string,
+    manager: EntityManager,
+  ) {
+    const status = await this.statusService.findOne('pending');
+
+    const address = await this.addressRepo.findOne({
+      where: { id: addressId },
+    });
+    if (!address) {
+      throw new BadRequestException('Address not found, id: ' + addressId);
+    }
+
+    const order = manager.create(Order, {
+      user: user,
+      totalPrice: 0,
+      status,
+      address,
+    });
+    return await manager.save(Order, order);
+  }
+
+  async processItemsForDirectOrder(
+    items: ItemsToProcessDto[],
+    order: Order,
+    manager: EntityManager,
+  ) {
+    let totalPrice = 0;
+    const variants: ProductVariant[] = [];
+    const orderItems: Item[] = [];
+
+    for (const { productVariantId, amount } of items) {
+      const variant = await this.variantService.requireFromStock(
+        productVariantId,
+        amount,
+      );
+      const cost = variant.product.price * amount;
+      totalPrice += cost;
+      variant.amount -= amount;
+      variants.push(variant);
+
+      const item = await manager.save(Item, {
+        amount,
+        productVariant: variant,
+        order: order,
+      });
+      orderItems.push(item);
+    }
+
+    return { totalPrice, variants, orderItems };
+  }
 }

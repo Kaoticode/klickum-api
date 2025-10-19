@@ -65,7 +65,7 @@ export class VariantService {
     }
     if (variant.amount < amount) {
       throw new BadRequestException(
-        `Not enough stock for variant ${variant.id}`,
+        `Not enough stock for variant ${variant.sku}`,
       );
     }
     return variant;

@@ -14,6 +14,13 @@ import { ProductVariant } from '../product/model/productVariant.entity';
 import { AddItemsCartHandler } from './command/add.items.command';
 import { RemoveItemsCartHandler } from './command/remove.items.command';
 import { EditItemsCartHandler } from './command/edit.amount.command';
+import { CheckoutItemsCartHandler } from './command/checkout.items.command';
+import { Item } from '../order/model/item.entity';
+import { OrderService } from '../order/order.service';
+import { OrderModule } from '../order/order.module';
+import { StatusModule } from '../status/status.module';
+import { MessageGatewayModule } from '../messageGateway/message.gateway.module';
+import { Address } from '../address/model/address.entity';
 
 const providers = [
   GetUserCartQueryHandler,
@@ -22,15 +29,20 @@ const providers = [
   AddItemsCartHandler,
   RemoveItemsCartHandler,
   EditItemsCartHandler,
+  CheckoutItemsCartHandler,
+  OrderService,
 ];
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Cart, CartItem, ProductVariant]),
+    TypeOrmModule.forFeature([Cart, CartItem, ProductVariant, Item, Address]),
     AuthModule,
     CqrsModule,
     UserModule,
     ProductModule,
+    OrderModule,
+    StatusModule,
+    MessageGatewayModule,
   ],
   providers,
   exports: providers,

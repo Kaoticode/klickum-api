@@ -25,25 +25,52 @@ import { Permissions } from '../common/decorator/permissions.decorator';
 import { Action } from '../role/domain/action.enum';
 import { UpdateOrderDto } from './domain/dto/updateOrder.dto';
 import { PaginatedGeneralReponseDto } from '../common/domain/dto/general.paginatation';
+import { CommandBus, QueryBus } from '@nestjs/cqrs';
+import { CreateDirectOrderDto } from './domain/dto/create.direct.order';
+import { CreateDirectOrderCommand } from './command/create.direct.order.command';
+import { GetUserOrdersQuery } from './query/get.user.order.query';
 
 @ApiTags('order')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
 @Controller('order')
 export class OrderController {
-  /*
-  constructor(private orderService: OrderService) {}
+  constructor(
+    private readonly commandBus: CommandBus,
+    private readonly queryBus: QueryBus,
+  ) {}
 
   @Post()
-  //@Permissions(Action.orderCreate)
-  @UseInterceptors(TransactionInterceptor)
-  @ApiBody({ type: CreateCompleteOrderDto })
+  @ApiBody({ type: CreateDirectOrderDto })
   async createOrder(
     @Body()
-    data: CreateCompleteOrderDto,
+    createDirectOrderDto: CreateDirectOrderDto,
     @Request() req,
   ) {
-    return await this.orderService.create(req.user.sub, data);
+    return await this.commandBus.execute(
+      new CreateDirectOrderCommand(req.user.sub, createDirectOrderDto),
+    );
   }
+
+  @Get('history')
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
+  async getUserOrders(
+    @Request() req,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+    return await this.queryBus.execute(
+      new GetUserOrdersQuery(req.user.sub, {
+        page,
+        limit,
+      }),
+    );
+  }
+
+  /*
+
 
   @Post('pre-order')
   //@Permissions(Action.orderCreate)
@@ -60,21 +87,7 @@ export class OrderController {
     return await this.orderService.preCreate(req.user.sub, data);
   }
 
-  @Get('history')
-  @ApiQuery({ name: 'page', type: Number, required: false })
-  @ApiQuery({ name: 'limit', type: Number, required: false })
-  @ApiResponse({ type: PaginatedGeneralReponseDto })
-  async getUserOrders(
-    @Request() req,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ) {
-    limit = limit > 100 ? 100 : limit;
-    return await this.orderService.paginateUserOrders(req.user.sub, {
-      page,
-      limit,
-    });
-  }
+  
 
   @Get()
   @Permissions(Action.orderRead)

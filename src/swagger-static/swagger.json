@@ -1014,6 +1014,68 @@
         ]
       }
     },
+    "/order": {
+      "post": {
+        "operationId": "OrderController_createOrder",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDirectOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
+    "/order/history": {
+      "get": {
+        "operationId": "OrderController_getUserOrders",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
     "/promotion": {
       "post": {
         "operationId": "PromotionController_create",
@@ -1586,6 +1648,35 @@
         },
         "responses": {
           "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "cart"
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/cart/checkout": {
+      "post": {
+        "operationId": "CartController_checkout",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CheckoutItemsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
             "description": ""
           }
         },
@@ -2238,6 +2329,39 @@
           "items"
         ]
       },
+      "ItemsToProcessDto": {
+        "type": "object",
+        "properties": {
+          "productVariantId": {
+            "type": "number"
+          },
+          "amount": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "productVariantId",
+          "amount"
+        ]
+      },
+      "CreateDirectOrderDto": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemsToProcessDto"
+            }
+          }
+        },
+        "required": [
+          "addressId",
+          "items"
+        ]
+      },
       "CreatePromotionDto": {
         "type": "object",
         "properties": {
@@ -2541,6 +2665,17 @@
         "required": [
           "productVariantId",
           "amount"
+        ]
+      },
+      "CheckoutItemsDto": {
+        "type": "object",
+        "properties": {
+          "addressId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "addressId"
         ]
       }
     }

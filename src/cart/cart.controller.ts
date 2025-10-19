@@ -20,6 +20,8 @@ import { AddItemsCartCommand } from './command/add.items.command';
 import { RemoveItemsCommand } from './command/remove.items.command';
 import { EditItemCommand } from './command/edit.amount.command';
 import { CartDtoDcos } from '../common/domain/dto/cart.detail.reponse.dto';
+import { CheckoutItemsCommand } from './command/checkout.items.command';
+import { CheckoutItemsDto } from './domain/dto/checkoutItems.dto';
 
 @ApiTags('cart')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -72,6 +74,13 @@ export class CartController {
   async editItems(@Body() updateItemsDto: AddItemsCartDto, @Request() req) {
     return await this.commandBus.execute(
       new EditItemCommand(req.user.sub, updateItemsDto),
+    );
+  }
+
+  @Post('checkout')
+  async checkout(@Request() req, @Body() { addressId }: CheckoutItemsDto) {
+    return await this.commandBus.execute(
+      new CheckoutItemsCommand(req.user.sub, addressId),
     );
   }
 }
