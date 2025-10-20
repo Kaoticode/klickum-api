@@ -6,7 +6,7 @@ import {
 import { Logger } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { UserService } from 'src/user/user.service';
+import { UserService } from '../../user/user.service';
 import { OrderService } from '../order.service';
 import { VariantService } from '../../product/variant.service';
 

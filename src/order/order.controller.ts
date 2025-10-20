@@ -29,6 +29,8 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs';
 import { CreateDirectOrderDto } from './domain/dto/create.direct.order';
 import { CreateDirectOrderCommand } from './command/create.direct.order.command';
 import { GetUserOrdersQuery } from './query/get.user.order.query';
+import { GetAllOrderQuery } from './query/get.all.order.query';
+import { CancelOrderCommand } from './command/cancel.order.command';
 
 @ApiTags('order')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -69,6 +71,31 @@ export class OrderController {
     );
   }
 
+  @Get()
+  @Permissions(Action.orderRead)
+  @ApiQuery({ name: 'page', type: Number, required: false })
+  @ApiQuery({ name: 'limit', type: Number, required: false })
+  @ApiResponse({ type: PaginatedGeneralReponseDto })
+  async getAllOrders(
+    @Request() req,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
+  ) {
+    limit = limit > 100 ? 100 : limit;
+
+    return await this.queryBus.execute(
+      new GetAllOrderQuery({
+        page,
+        limit,
+      }),
+    );
+  }
+
+  @Patch('cancell/:id')
+  async admincancell(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
+    return this.commandBus.execute(new CancelOrderCommand(req.user.sub, id));
+  }
+
   /*
 
 
@@ -87,25 +114,6 @@ export class OrderController {
     return await this.orderService.preCreate(req.user.sub, data);
   }
 
-  
-
-  @Get()
-  @Permissions(Action.orderRead)
-  @ApiQuery({ name: 'page', type: Number, required: false })
-  @ApiQuery({ name: 'limit', type: Number, required: false })
-  @ApiResponse({ type: PaginatedGeneralReponseDto })
-  async getAllOrders(
-    @Request() req,
-    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 10,
-  ) {
-    limit = limit > 100 ? 100 : limit;
-
-    return await this.orderService.paginateAllOrders({
-      page,
-      limit,
-    });
-  }
 
   @Get(':id')
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -123,10 +131,7 @@ export class OrderController {
     return this.orderService.cancellOrder(id);
   }
 
-  @Patch('cancell/:id')
-  async admincancell(@Param('id', ParseUUIDPipe) id: string, @Request() req) {
-    return this.orderService.cancellUserOrder(id, req.user.sub);
-  }
+  
   @Patch(':id')
   @Permissions(Action.adminOrder)
   async update(

@@ -9,11 +9,13 @@ import { ConfigService } from '@nestjs/config';
 import { MessageGatewayModule } from '../messageGateway/message.gateway.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Address } from '../address/model/address.entity';
-import { ProductModule } from 'src/product/product.module';
+import { ProductModule } from '../product/product.module';
 import { CqrsModule } from '@nestjs/cqrs';
 import { CreateDirectOrderHandler } from './command/create.direct.order.command';
 import { GetUserCartQueryHandler } from './query/get.user.order.query';
 import { Order } from './model/order.entity';
+import { GetAllOrderQueryHandler } from './query/get.all.order.query';
+import { CancelOrderHandler } from './command/cancel.order.command';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { Order } from './model/order.entity';
     ConfigService,
     CreateDirectOrderHandler,
     GetUserCartQueryHandler,
+    GetAllOrderQueryHandler,
+    CancelOrderHandler,
   ],
   exports: [CreateDirectOrderHandler],
   controllers: [OrderController],
