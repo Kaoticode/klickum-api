@@ -64,4 +64,19 @@ export class UserService {
     user.balance -= valueToCharge;
     await manager.save(User, user);
   }
+
+  async updateUserBalanceDeposit(
+    user: User,
+    valueToDeposit: number,
+    manager: EntityManager,
+  ) {
+    if (isNaN(user.balance)) {
+      throw new Error('Invalid user balance: ' + user.balance);
+    }
+    user.balance = Number(user.balance) + Number(valueToDeposit);
+
+    console.log('Updated user balance:', user.balance);
+
+    //await manager.save(User, user);
+  }
 }

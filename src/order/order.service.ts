@@ -258,4 +258,43 @@ export class OrderService {
 
     return { totalPrice, variants, orderItems };
   }
+
+  async restoreStock(
+    productVariantId: number,
+    amount: number,
+    manager: EntityManager,
+  ): Promise<void> {
+    const variant = await manager.findOne(ProductVariant, {
+      where: { id: productVariantId },
+    });
+    if (variant) {
+      variant.amount += amount;
+      await manager.save(variant);
+    } else {
+      throw new Error('Variant not found');
+    }
+  }
+
+  async cancelOrder(order: Order, manager: EntityManager): Promise<void> {
+    const status = await this.statusService.findOne('cancelled');
+
+    order.status = status;
+    await manager.save(order);
+  }
+
+  async findOneTransactional(
+    orderId: string,
+    manager: EntityManager,
+  ): Promise<Order> {
+    const order = await manager.findOne(Order, {
+      where: { id: orderId },
+      relations: ['status', 'items', 'items.productVariant'],
+    });
+
+    if (!order) {
+      throw new BadRequestException('Order not found');
+    }
+
+    return order;
+  }
 }

@@ -1036,6 +1036,42 @@
         "tags": [
           "order"
         ]
+      },
+      "get": {
+        "operationId": "OrderController_getAllOrders",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "default": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedGeneralReponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "order"
+        ]
       }
     },
     "/order/history": {
@@ -1069,6 +1105,52 @@
                 }
               }
             }
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
+    "/order/cancell/{id}": {
+      "patch": {
+        "operationId": "OrderController_admincancell",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
+    "/order/{id}": {
+      "get": {
+        "operationId": "OrderController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
           }
         },
         "tags": [
