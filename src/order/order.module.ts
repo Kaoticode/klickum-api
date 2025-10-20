@@ -16,6 +16,7 @@ import { GetUserCartQueryHandler } from './query/get.user.order.query';
 import { Order } from './model/order.entity';
 import { GetAllOrderQueryHandler } from './query/get.all.order.query';
 import { CancelOrderHandler } from './command/cancel.order.command';
+import { GetOneOrderQueryHandler } from './query/get.one.order.query';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { CancelOrderHandler } from './command/cancel.order.command';
     GetUserCartQueryHandler,
     GetAllOrderQueryHandler,
     CancelOrderHandler,
+    GetOneOrderQueryHandler,
   ],
   exports: [CreateDirectOrderHandler],
   controllers: [OrderController],

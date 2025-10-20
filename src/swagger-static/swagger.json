@@ -1135,6 +1135,29 @@
         ]
       }
     },
+    "/order/{id}": {
+      "get": {
+        "operationId": "OrderController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "order"
+        ]
+      }
+    },
     "/promotion": {
       "post": {
         "operationId": "PromotionController_create",

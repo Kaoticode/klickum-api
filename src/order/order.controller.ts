@@ -31,6 +31,7 @@ import { CreateDirectOrderCommand } from './command/create.direct.order.command'
 import { GetUserOrdersQuery } from './query/get.user.order.query';
 import { GetAllOrderQuery } from './query/get.all.order.query';
 import { CancelOrderCommand } from './command/cancel.order.command';
+import { GetOneOrderQuery } from './query/get.one.order.query';
 
 @ApiTags('order')
 @UseGuards(JwtAuthGuard, AuthorizationGuard)
@@ -96,6 +97,11 @@ export class OrderController {
     return this.commandBus.execute(new CancelOrderCommand(req.user.sub, id));
   }
 
+  @Get(':id')
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
+    return this.queryBus.execute(new GetOneOrderQuery(id));
+  }
+
   /*
 
 
@@ -115,10 +121,7 @@ export class OrderController {
   }
 
 
-  @Get(':id')
-  async findOne(@Param('id', ParseUUIDPipe) id: string) {
-    return this.orderService.findOne(id);
-  }
+ 
 
   @Post('process')
   async processOrder(@Body() processOrderDto: ProcessOrderDto) {
