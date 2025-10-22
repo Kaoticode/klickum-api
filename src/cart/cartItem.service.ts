@@ -17,24 +17,28 @@ export class CartItemService {
     private readonly variantService: VariantService,
   ) {}
 
-  async create(cart: Cart, AddItemsCartDto: AddItemsCartDto[]) {
+  async create(
+    cart: Cart,
+    AddItemsCartDto: AddItemsCartDto[],
+    manager: EntityManager,
+  ) {
     const cartItems: CartItem[] = [];
     let totalPrice = 0;
 
-    await Promise.all(
-      AddItemsCartDto.map(async ({ amount, productVariantId }) => {
-        const variant = await this.variantService.requireFromStock(
-          productVariantId,
-          amount,
-        );
-        const cost = variant.product.price * amount;
-        totalPrice += cost;
-        const savedItem = await this.repo.save(
-          this.repo.create({ amount, productVariant: variant, cart }),
-        );
-        cartItems.push(savedItem);
-      }),
-    );
+    for (const { amount, productVariantId } of AddItemsCartDto) {
+      const variant = await this.variantService.requireFromStock(
+        productVariantId,
+        amount,
+      );
+      const cost = variant.product.price * amount;
+      totalPrice += cost;
+      const savedItem = await manager.save(CartItem, {
+        amount,
+        productVariant: variant,
+        cart,
+      });
+      cartItems.push(savedItem);
+    }
     return { cartItems, totalPrice };
   }
 
